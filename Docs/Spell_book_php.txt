@@ -1,0 +1,439 @@
+Написание модуля Core:
+
+Pre_routing(index.php):
+Решаем вопрос с определением подпапки перехода пользователя (будущий контроллер/модель/отображение):
+Осмотрим глобальную переменную php $_SERVER.
+Это массив, содержащий объект REQUEST_URI со значением переходов.
+Отобразить его мы можем следующим образом: $_SERVER['REQUEST_URI']
+Теперь отфильтруем только первое вхождение в папку explode('/', $_SERVER['REQUEST_URI'])[1]
+Можно забирать это значение в переменную $route
+Теперь нам нужно научиться подключать файлы с кодом.
+Это делают множество команд, но нам лучше подходит:
+include_once
+Следовательно, наш index фалй станет выглядеть так: 
+index.php:
+<?php
+// Тут исключительно роутер.
+include_once "../core/router/router.php";
+На этом главный файл сайта закончен.
+Остальное переносим в соответствующую папку и файл.
+Всё получилось и работает.
+21.11.2022
+Продолжим писать наш роутер.
+Теперь нам необходимо проанализировать нашу переменную. 
+На первом этапе код таков:
+// Анализируем переменную:
+// Если пусто, то мы ссылаемся на главную:
+if ($route == ""){
+    // Главный контроллер:
+    $route="index";
+}
+// Проверяем наличие файла контроллера, в том числе и главной страницы:
+if (!file_exists("../core/controller/$route.php")) {
+    // Переводим пользователя на страницу 404:
+    $route=404;
+}
+// Передаем управление определенному контроллеру.
+include_once "../core/controller/$route.php";
+
+Первым делос мы переназначим контроллер при пустотеЖ
+if ($route == ""){
+    // Главный контроллер:
+    $route="index";
+}
+Второе: Проверим существование оного в системе:
+if (!file_exists("../core/controller/$route.php")) {
+    // Переводим пользователя на страницу 404:
+    $route=404;
+}
+
+Если его нет, то отправляем на страницу ошибки.
+Иначе отправим на выбранную страницу.
+
+Создадим наш первый контроллер для ошибки 404:
+404.php:
+<?php
+echo "Controller не существует!!!";
+Теперь при заходе на сайт мы получим такой ответ на любой запрос
+
+Создадим контроллер головной страницы:
+<?php
+echo "Это главная страница сайта";
+
+И смотрим тест.
+
+Все хорошо, по аналогии делаем админку:
+admin.php
+<?php
+echo "Это админка сайта";
+
+27.11.2022
+Итак, у нас есть временные заглушки для страниц.
+Теперь нам нужно озаботиться выводом информации на них.
+А для этого нужно где-то хранить данные. (База данных? или конфиг?)
+В случае информации о сайте и его настройках - логичнее конфиг.
+Создадим...
+./core/config/config.ini - Файл конфига.
+Начнем его заполнять:
+1. Раздел site
+title="Книга заклинаний" - Тут пишется название портала
+2. Раздел sql
+host = 'localhost' - Хост хранения базы
+port = '3306' - Порт подключения, на всякий случай
+login = 'root' - Логин
+password = 'root' - пароль
+bd = 'spell_book' - Название БД
+
+Теперь определимся с тем, как нам его задействовать в своих корыстных целях :-)
+Для сего действа создадим модель:
+./core/model/config.php - модель, работающая с конфигом.
+Состоит пока из:
+<?php
+// Парсим конфиг:
+if (!$config){
+    $config = parse_ini_file("../core/config/config.ini", true); 
+ }
+Проверки наличия переменной и парсинга файла.
+И не забываем его подключать в контроллеры:
+include_once "../core/model/config.php";
+
+Таким образом, нам удалось на главной странице сайта получить информацио об имени портала из конфиг файла:
+<?php
+include_once "../core/model/config.php";
+echo $config['site']['title']."<br>"; - обращение к разделу ['site'], переменной ['title'] . -конкатинация для добавления кода html ввиду отсутствия прочей верстки.
+echo "Это главная страница сайта";
+
+Продолжим...
+Нашел крайне интересную команду: get_defined_vars()
+Будем работать через её посредство. Дабы писать наиболее логичный код и использовать общее хранилище переменных.
+Назовём его: box (коробка), что логично.
+Таким образом, у нас route будет сложен уже в коробку:
+<?php
+// Откроем нашу коробку с переменными:
+$box=[];
+// Путь перехода по папкам (в нашем случае - имя контроллера)
+$box=['route' => explode("/", $_SERVER["REQUEST_URI"])[1]];
+// Анализируем переменную:
+// Если пусто, то мы ссылаемся на главную:
+if ($box['route'] == ""){
+    // Главный контроллер:
+    $box['route']="index";
+}
+// Проверяем наличие файла контроллера, в том числе и главной страницы:
+if (!file_exists("../core/controller/".$box['route'].".php")) {
+    // Переводим пользователя на страницу 404:
+    $box['route']=404;
+}
+// Передаем управление определенному контроллеру.
+include_once "../core/controller/".$box['route'].".php";
+
+Остается туда же запихнуть конфиг... Делаемс...
+<?php
+// Парсим конфиг:
+if (!$config){
+    $box['config'] = parse_ini_file("../core/config/config.ini", true); 
+}
+Теперь и конфиг у нас в коробочке лежит...
+
+И теперь название портала мы достанем из коробки:
+echo $box['config']['site']['title']."<br>";
+На этом всё. Управлять массивом данных так будет в разы проще и интереснее :-)
+
+Перекидываем дамп переменных на админ раздел и будем разрабатывать через него:
+<?php
+include_once "../core/model/config.php";
+echo $box['config']['site']['title']."<br>";
+echo "Это главная страница сайта<br>";
+echo "<a href=/admin>Админка</a>"; - делаем ссылку с индекса
+...
+<?php
+include_once "../core/model/config.php";
+echo $box['config']['site']['title']."<br>";
+var_dump(get_defined_vars()); - смотрим не наплодили ли мы какого непотребства...
+
+Пишем модель для работы с БД:
+./core/model/sql.php - модель, работающая с SQL.
+<?php
+// Делаем коннект к БД:
+function dbConnect($host, $mysqlLogin, $mysqlPassword, $datebase, $mysqlPort=""){
+    if (!$db){
+        // Подключение с параметрами из конфига:
+        if($mysqlPort==""){
+            $db = mysqli_connect($host, $mysqlLogin, $mysqlPassword, $datebase); - создание подключения без порта (как раз на хостинге такой патч нужен для новой sql)
+        } else{
+            $db = mysqli_connect($host.":".$mysqlPort, $mysqlLogin, $mysqlPassword, $datebase); -создание подключения с портом
+        }
+        if ($db){
+            // Кодировка:
+            mysqli_set_charset($db, "utf8"); - переключим кодировку
+        }
+    } 
+    return $db;
+}
+$box['db'] = dbConnect($box['config']['sql']['host'], $box['config']['sql']['login'], $box['config']['sql']['password'], $box['config']['sql']['bd'], $box['config']['sql']['port']); - выполним функцию подключения, и так же отправим все это в box
+
+Добавим команды для sql:
+
+// Получить список значений
+function allContent($table, $params = ""){
+    global $db;
+    return mysqli_fetch_all(mysqli_query($db, "SELECT * FROM {$table} {$params}"), MYSQLI_ASSOC);;
+}
+// Получить 1 значение
+function oneContent($table, $params = ""){
+    global $db;
+    return mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM {$table} {$params}"));
+}
+
+// Обновить значения:
+function updContent($table, $params){
+    global $db;
+    mysqli_query($db, "UPDATE {$table} {$params}");
+}
+// Добавить значения
+function addContent($table, $params){
+    global $db;
+    mysqli_query($db, "INSERT INTO {$table} {$params}");
+}
+// Удалить значение
+function delContent($table, $params){
+    global $db;
+    mysqli_query($db, "DELETE FROM {$table} {$params}");
+}
+// Свободный запрос
+function freeContent($sql){
+    global $db;
+    return mysqli_fetch_all(mysqli_query($db, $sql), MYSQLI_ASSOC);
+}
+// Test_setup_block
+function addTable($params){
+    global $db;
+    mysqli_query($db, $params);
+}
+
+Пока без описания, для определения необходимого функционала.
+Теперь нам нужна авторизация, как у правильных людей :-)
+Но об этом уже в другой серии сказки...
+
+28.11.2022
+Мы запустим просмотр и создание сессии, если её небыло:
+// Смотрим сессию:
+session_start();
+Сие запишем в роутер, для удобства.
+
+И теперь мы должны контролировать пользовательский ввод!
+Начнем...
+./core/model/input.php - модель, работающая с вводимыми данными.
+На первом этапе будем чистить ввод от html тегов:
+$box['input']=strip_tags($box['input']); - примерно так.
+Завернем в функцию:
+function clear($data){
+    $data=strip_tags($data); - чистим от тегов.
+    return $data;
+}
+И обратиться мы можем так: $box['input']=clear($box['input']); - чистим данные в в конкретной переменной.
+
+Теперь можно приступить к авторизации.
+Для авторизации нужно вывод из контроллера передать модулю отображения.
+Напишем его.
+./core/viewer/admin.php
+<?php
+echo $box['config']['site']['title']."<br>";
+echo '<pre>';
+var_dump(get_defined_vars());
+echo '</pre>';
+
+Весь вывод логов и заголовков мы передадим модулю отображения.
+Теперь напишем простой логин блок там же.
+<?php
+echo $box['config']['site']['title']."<br>";
+if ($_SESSION['login']){
+    echo '<pre>';
+    var_dump(get_defined_vars());
+    echo '</pre>';
+} else { - если не залогинен пользователь, то мы ему покажем форму входа вместо дампа технички:
+    echo '<form action="/admin" method="post" enctype="multipart/form-data">
+    <input type="text" placeholder="Введите логин" name="login" required><br>
+    <input type="password" placeholder="Введите пароль" name="password" required><br>
+    <button type="submit">Вход</button>
+    <button type="reset" class="cancelbtn">Очистить</button><br>
+</form>';
+}
+Обработка данных из формы:
+<?php
+include_once "../core/model/config.php";
+include_once "../core/model/sql.php";
+include_once "../core/model/input.php";
+$_POST['login']=clear($_POST['login']); - чистим переменные от возможных ссылок
+$_POST['password']=clear($_POST['password']); - чистим переменные от возможных ссылок
+if ($_POST['login']=='admin' && $_POST['password']=='admin'){ - проверка пары логина и пароля на соответствие заданным, потом их будет давать БД.
+    $_SESSION['login']=1; - если есть, даем заход
+    $_POST=[]; - и чистим введенные данные
+}
+include_once "../core/viewer/".$box['route'].".php"; - переходим в отображение информации.
+
+Теперь нам нужно отобразить что-то на нашей главной странице.
+Контроллер главной страницы стал таким:
+<?php
+include_once "../core/model/config.php";
+include_once "../core/viewer/".$box['route'].".php"; - вызов модели отображения
+Модуль отображения:
+./core/viewer/index.php - модуль отображения главной страницы
+<?php
+echo $box['config']['site']['title']."<br>";
+echo "Это главная страница сайта<br>";
+echo "<a href=/admin>Админка</a>";
+04.12.2022
+Теперь нам необходимо использовать базу данных для работы портала.
+Начнем с вывода постов (пока зададим их руками через phpmyadmin)
+INSERT INTO `posts` (`id`, `title`, `text`, `date_write`, `readings`) VALUES (NULL, 'Заклинание', 'Я дарю тебе странные речи,\r\nЧто согреют холодной зимою.\r\nЧто дорогу осветят как свечи,\r\nИ помогут проститься с тоскою.\r\n\r\nЯ дарю всему миру надежду,\r\nНа прохладу в придвериях ада.\r\nНе запачкается пусть одежда,\r\nОт косого на улице взгляда.\r\n\r\nОт болезней, невзгод и ударов,\r\nОграждаю, читатель, до срока.\r\nЗакрываю от жутких кошмаров,\r\nТех, кто жизни усвоил урока.\r\n\r\nБудь собой, даже в жерле вулкана,\r\nДаже с крыши упав, не теряйся.\r\nНе бери в свою жизнь ты обмана,\r\nОставаться собою старайся.\r\n\r\nВозлагаю я в вышние строки,\r\nВсю ту силу, что мне помогает.\r\nПусть всевышний мои же оброки,\r\nНа нуждающихся распределяет.', '2022-01-08', '0');
+sql запрос на наполнение 1 записью
+Пока создадим 4 штуки однотипной записи.
+В головном контроллере запросим:
+По имени таблицы:
+$table="posts";
+Все записи:
+$box['posts']=allContent($table);
+В режиме отображения поглядим на содержимое:
+foreach($box['posts'] as $post){
+    echo $post['id']."<br>";
+    echo $post['title']."<br>";
+    $text=explode("\r\n", $post['text']); echo $text[0]."<br>".$text[1]."<br>".$text[2]."<br>".$text[3]."<br>";
+    echo $post['date_write']."<br>";
+    echo $post['readings']."<br>";
+    echo $post['image']."<br>";
+}
+
+Но мы столкнулись с ошибкой в отработке sql.
+Исправим функции:
+// Получить список значений
+function allContent($table, $params = ""){
+    global $box;
+    return mysqli_fetch_all(mysqli_query($box['db'], "SELECT * FROM {$table} {$params}"), MYSQLI_ASSOC);
+}
+// Получить 1 значение
+function oneContent($table, $params = ""){
+    global $box;
+    return mysqli_fetch_assoc(mysqli_query($box['db'], "SELECT * FROM {$table} {$params}"));
+}
+
+// Обновить значения:
+function updContent($table, $params){
+    global $box;
+    mysqli_query($box['db'], "UPDATE {$table} {$params}");
+}
+
+// Добавить значения
+function addContent($table, $params){
+    global $box;
+    mysqli_query($box['db'], "INSERT INTO {$table} {$params}");
+}
+
+// Удалить значение
+function delContent($table, $params){
+    global $box;
+    mysqli_query($box['db'], "DELETE FROM {$table} {$params}");
+}
+
+// Свободный запрос
+function freeContent($sql){
+    global $box;
+    return mysqli_fetch_all(mysqli_query($box['db'], $sql), MYSQLI_ASSOC);
+}
+
+// Test_setup_block
+function addTable($params){
+    global $box;
+    mysqli_query($box['db'], $params);
+}
+
+Теперь все заработало.
+
+Отобразим одну запись из БД
+Контроллер:
+<?php
+include_once "../core/model/config.php";
+include_once "../core/model/sql.php";
+include_once "../core/model/input.php";
+$box['table']="posts";
+$_GET['id']=chislo(clear($_GET['id']));
+$box['params']="where id=".$_GET['id'];
+$box['post']=oneContent($table);
+$_GET=[];
+include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+Вьюха:
+<?php
+echo $box['config']['site']['title']."<br>";
+echo $box['post']['title']."<br>";
+echo "<a href=/admin>Админка</a><br>";
+echo "Запись:<br>";
+echo $box['post']['id']."<br>";
+echo $box['post']['title']."<br>";
+echo $box['post']['text']."<br>";
+echo $box['post']['date_write']."<br>";
+echo $box['post']['image']."<br>";
+
+И снова правим все места с переменками:
+<?php
+// Делаем коннект к БД:
+function dbConnect(){
+    global $box;
+    if (!$db){
+        // Подключение с параметрами из конфига:
+        if($box['config']['sql']['port']==""){
+            $db = mysqli_connect($box['config']['sql']['host'], $box['config']['sql']['login'], $box['config']['sql']['password'], $box['config']['sql']['bd']);
+        } else{
+            $db = mysqli_connect($box['config']['sql']['host'].":".$box['config']['sql']['port'], $box['config']['sql']['login'], $box['config']['sql']['password'], $box['config']['sql']['bd']);
+        }
+        if ($db){
+            // Кодировка:
+            mysqli_set_charset($db, "utf8");
+        }
+    }
+    return $db;
+}
+
+$box['db'] = dbConnect();
+
+// Получить список значений
+function allContent(){
+    global $box;
+    return mysqli_fetch_all(mysqli_query($box['db'], "SELECT * FROM {$box['table']} {$box['params']}"), MYSQLI_ASSOC);
+}
+// Получить 1 значение
+function oneContent(){
+    global $box;
+    return mysqli_fetch_assoc(mysqli_query($box['db'], "SELECT * FROM {$box['table']} {$box['params']}"));
+}
+
+// Обновить значения:
+function updContent(){
+    global $box;
+    mysqli_query($box['db'], "UPDATE {$box['table']} {$box['params']}");
+}
+
+// Добавить значения
+function addContent(){
+    global $box;
+    mysqli_query($box['db'], "INSERT INTO {$box['table']} {$box['params']}");
+}
+
+// Удалить значение
+function delContent(){
+    global $box;
+    mysqli_query($box['db'], "DELETE FROM {$box['table']} {$box['params']}");
+}
+// Пока не изменял
+// Свободный запрос
+function freeContent($sql){
+    global $box;
+    return mysqli_fetch_all(mysqli_query($box['db'], $sql), MYSQLI_ASSOC);
+}
+
+// Test_setup_block
+function addTable($params){
+    global $box;
+    mysqli_query($box['db'], $params);
+}
+
+Пока такой код собрался. (работоспособность ка и у старой версии)
