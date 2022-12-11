@@ -10,7 +10,7 @@ Pre_routing(index.php):
 Теперь нам нужно научиться подключать файлы с кодом.
 Это делают множество команд, но нам лучше подходит:
 include_once
-Следовательно, наш index фалй станет выглядеть так: 
+Следовательно, наш index файл станет выглядеть так: 
 index.php:
 <?php
 // Тут исключительно роутер.
@@ -437,3 +437,292 @@ function addTable($params){
 }
 
 Пока такой код собрался. (работоспособность ка и у старой версии)
+
+05.12.2022 - Блоки авторизации.
+./core/model/login.php - Отображение залогиненного пользователя или гостя
+<?php
+if ($_SESSION['login']){
+    echo "<a href=/admin>".$_SESSION['login']."</a><br>"; - логин покажем
+} else {
+    echo "<a href=/admin>Гость</a><br>"; - покажем Гость
+}
+В админ контроллере:
+
+if ($_POST['login'] && $_POST['password']){
+    $_POST['login']=clear($_POST['login']);
+    $_POST['password']=clear($_POST['password']);
+    $box['table']="users"; ---------------------------------------
+    $box['params']="where `nickname`='{$_POST['login']}'"; -------Это все для получения пользователя из БД
+    $box['user']=oneContent(); -----------------------------------
+    if ($_POST['password']==$box['user']['password']){
+        $_SESSION['login']=$box['user']['nickname'];
+        $_SESSION['role']=$box['user']['role'];
+        $_SESSION['avatar']=$box['user']['avatar'];
+        $_POST=[];
+        $_REQUEST=[];
+    }
+}
+усложнили логику
+
+06.12.2022
+Перепишем логику модели получения логина:
+<?php
+function getLogin(){
+    if ($_SESSION['login']){
+        return $_SESSION['login'];
+    } else {
+        return "Гость";
+    }
+} - Теперь она соответствует модели. (только получение данных)
+
+Усложним авторизацию:
+Нам нужно хранить в БД hash пароля.
+Сперва сформируем hash:
+var_dump(password_hash('programmer-tm', PASSWORD_DEFAULT)); - Получившийся кэш мы положим в БД.
+После этого удалим строку и перепишем получение пароля из БД и его сравнение:
+if (password_verify($_POST['password'], $box['user']['password'])){
+        $_SESSION['login']=$box['user']['nickname'];
+        $_SESSION['role']=$box['user']['role'];
+        $_SESSION['avatar']=$box['user']['avatar'];
+        $_POST=[];
+        $_REQUEST=[];
+    }
+И проверяем... Залогинится получилось.
+Настраиваем навигацию:
+echo "<a href=/>".$box['config']['site']['title']."</a><br>"; - Главная
+echo '<a onclick="javascript:history.back(); return false;" title="Назад в будущее!">Назад</a>'; - Назад (опционально)
+Теперь мы должны добавить прочтения к постам.
+Ну и проверку по наличию поста...
+if ($box['post']!=""){
+    include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+} else {
+    include_once "../core/controller/404.php";
+}
+Коль есть пост - его отображаем, если нет, то идем в ошибку.
+
+И получим комментарии к посту:
+function getComments(){
+    global $box;
+    $box['table']="comments";
+    $box['params']="where `post_id` = '{$_GET['id']}'";
+    return allContent();
+}
+
+Добавим прочтение при открытии:
+function updReadPost(){
+    global $box;
+    $box['table']="posts";
+    ++$box['post']['readings'];
+    $box['params']="SET `readings` = '{$box['post']['readings']}' where `id` = '{$_GET['id']}'";
+    updContent();
+}
+
+Итого у нас пост стал таким:
+<?php
+include_once "../core/model/config.php";
+include_once "../core/model/sql.php";
+include_once "../core/model/input.php";
+include_once "../core/model/login.php";
+$box['table']="posts";
+$_GET['id']=chislo(clear($_GET['id']));
+$box['params']="where id=".$_GET['id'];
+$box['post']=oneContent();
+
+function updReadPost(){
+    global $box;
+    $box['table']="posts";
+    ++$box['post']['readings'];
+    $box['params']="SET `readings` = '{$box['post']['readings']}' where `id` = '{$_GET['id']}'";
+    updContent();
+}
+
+function getComments(){
+    global $box;
+    $box['table']="comments";
+    $box['params']="where `post_id` = '{$_GET['id']}'";
+    return allContent();
+}
+
+if ($box['post']!=""){
+    updReadPost();
+    $box['comments']=getComments();
+    include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+} else {
+    include_once "../core/controller/404.php";
+}
+$_GET=[];
+
+Идем дальше в следующем выпуске...
+
+11.12.2022
+
+Первое: причешем фунционал:
+Удалим лишние модели...
+Причешем главный контроллер:
+<?php
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
+include_once "../core/model/config.php"; // Кофигурация сайта
+include_once "../core/model/sql.php"; // Работа с sql
+// Проверяем наличие нового поста и авторизации пользователя как администратора:
+if ($_POST['post'] != "" && $_SESSION['role'] == "0"){
+    addPost(); // Добавим новую запись в базу данных
+    clearData(); // Проведем очистку переменных
+    browse(); // Отправим пользователя на страницу по умолчанию - главная.
+} else {
+    // Иначе, если нет чего то из тех условий:
+    $box['table']="posts"; // Выберем таблицу с записями
+    $box['posts']=allContent($table); // Получим все записи из таблицы
+}
+// Подключим модуль отображения информации для пользователя:
+include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+Пока он таков...
+
+Вторым делом проверим авторизационный блок:
+Он отвалился :-)
+Чтож, знакомо, правим и его...
+<?php
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
+include_once "../core/model/config.php"; // Кофигурация сайта
+include_once "../core/model/sql.php"; // Работа с sql
+// Проверяем наличие логина и пароля от пользователя:
+if ($_POST['login'] && $_POST['password']){
+    authUser(); // Выполним авторизацию
+    clearData(); // Почистим данные
+}
+// Подключим модуль отображения информации для пользователя:
+include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+
+На текущий момент он будет таков
+
+Перепишем блок одного поста:
+<?php
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
+include_once "../core/model/config.php"; // Кофигурация сайта
+include_once "../core/model/sql.php"; // Работа с sql
+getPost(); // Получим пост
+$_GET['cmd']=clear($_GET['cmd']); // Смотрим команду управления
+$box['comments']=getComments(); // Получим комментарии
+// Проверим его наличие:
+if ($box['post'] != ""){ // Есть пост...
+    if ($_GET['cmd'] == "updPost" && $_SESSION['role'] == "0"){
+        updPost(); // Обновим пост
+        clearData(); // Почистим данные
+        browse("/post/?id={$_GET['id']}"); // Переадресация пользователя
+    } elseif($_GET['cmd'] == "updComment"){
+        updComment(); // Обновим комментарий
+        clearData(); // Почистим данные
+        browse("/post/?id={$_GET['id']}"); // Переадресация пользователя
+    } elseif ($_GET['cmd'] == "delPost" && $_SESSION['role'] == "0"){
+        delPost(); // Обновим пост
+        clearData(); // Почистим данные
+        browse(); // Переадресация пользователя
+    } elseif ($_GET['cmd'] == "addComment"){
+        addComment(); // Добавим комментарий
+        clearData(); // Почистим данные
+        browse("/post/?id={$_GET['id']}"); // Переадресация пользователя
+    } elseif ($_GET['cmd'] == "delComment" && $_GET['c_id'] != ""){
+        delComment(); // Удалим комментарий
+        clearData(); // Почистим данные
+        browse("/post/?id={$_GET['id']}"); // Переадресация пользователя
+    } elseif ($_GET['cmd'] == "modComment" && $_GET['c_id'] != ""){
+        modComment(); // Модерируем комментарий
+        clearData(); // Почистим данные
+        browse("/post/?id={$_GET['id']}"); // Переадресация пользователя
+    } else {
+        updReadPost(); // Обновим прочтения
+        clearData(); // Почистим данные
+        // Подключим модуль отображения информации для пользователя:
+        include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+    } 
+} else {
+    clearData(); // Почистим данные
+    // Подключим модуль отображения информации для пользователя:
+    include_once "../core/controller/404.php";
+}
+Пока без подвазывания проверки прав пользователя.
+Разлогон:
+<?php
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
+logout(); // Разлогиним пользователя
+browse($_SERVER['HTTP_REFERER']); // Переадрес на предыдущую страницу
+
+Пока все на этом...
+Следующий этап - сделать регистрацию и управление профилем.
+12.12.2022
+Делаем регистрацию:
+<?php
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
+include_once "../core/model/config.php"; // Кофигурация сайта
+include_once "../core/model/sql.php"; // Работа с sql
+// Проверяем наличие логина и пароля от пользователя:
+if ($_POST['login'] && $_POST['password']){
+    authUser(); // Выполним авторизацию
+    clearData(); // Почистим данные
+} elseif ($_POST['user'] != ""){
+    addUser(); // Регистрируем пользователя
+    clearData(); // Почистим данные
+}
+// Подключим модуль отображения информации для пользователя:
+include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+Функцию добавления пользователя разместили в файле функций. (Есть проверка ника и почты).
+Теперь нужно накидать примерное управление пользователем...
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
+include_once "../core/model/config.php"; // Кофигурация сайта
+include_once "../core/model/sql.php"; // Работа с sql
+// Проверяем наличие логина и пароля от пользователя:
+if ($_POST['login'] && $_POST['password']){
+    authUser(); // Выполним авторизацию
+    clearData(); // Почистим данные
+    browse($_SERVER['HTTP_REFERER']); // Переадрес на предыдущую страницу
+} elseif ($_POST['user'] != "" && $_SESSION['login'] == ""){
+    addUser(); // Регистрируем пользователя
+    clearData(); // Почистим данные
+    browse(); // Переадресация пользователя
+} elseif ($_POST['user'] != "" && $_SESSION['login'] != ""){
+    updUser(); // Обновим пользователя
+    clearData(); // Почистим данные
+    browse("/admin"); // Переадресация пользователя
+} elseif ($_SESSION['id'] != "") {
+    $box['user']=getUser(); // Получим залогиненного пользователя
+}
+// Подключим модуль отображения информации для пользователя:
+include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+
+Пользователь умеет править свои данные и менять пароль.
+Надо сделать самоликвидацию...
+<?php
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
+include_once "../core/model/config.php"; // Кофигурация сайта
+include_once "../core/model/sql.php"; // Работа с sql
+$_GET['cmd']=clear($_GET['cmd']); // Смотрим команду управления
+// Проверяем наличие логина и пароля от пользователя:
+if ($_POST['login'] && $_POST['password']){
+    authUser(); // Выполним авторизацию
+    clearData(); // Почистим данные
+    browse($_SERVER['HTTP_REFERER']); // Переадрес на предыдущую страницу
+} elseif ($_POST['user'] != "" && $_SESSION['login'] == ""){
+    addUser(); // Регистрируем пользователя
+    clearData(); // Почистим данные
+    browse(); // Переадресация пользователя
+} elseif ($_POST['user'] != "" && $_SESSION['login'] != ""){
+    updUser(); // Обновим пользователя
+    clearData(); // Почистим данные
+    browse("/admin"); // Переадресация пользователя
+} elseif ($_SESSION['id'] != "" && $_GET['cmd'] == "del") {
+    delUser(); // Совершим самоубийство с сайта
+    logout(); // Разлогиним пользователя
+    clearData(); // Почистим данные
+    browse(); // Переадресация пользователя
+} elseif ($_SESSION['id'] != "") {
+    $box['user']=getUser(); // Получим залогиненного пользователя
+}
+// Подключим модуль отображения информации для пользователя:
+include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+И она есть... Пока без подтверждений...
