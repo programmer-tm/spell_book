@@ -1,9 +1,11 @@
 <?php
 // Подключаем модели:
 include_once "../core/model/functions.php"; // Функционал сайта
-include_once "../core/model/config.php"; // Кофигурация сайта
-include_once "../core/model/sql.php"; // Работа с sql
+getConfig(); // Получим конфиг
+getDB(); // Получим БД
 $_GET['cmd']=clear($_GET['cmd']); // Смотрим команду управления
+$_GET['t_id']=clear($_GET['t_id']); // Смотрим токен
+$_GET['u_id']=chislo(clear($_GET['u_id'])); // Смотрим пользователя
 // Проверяем наличие логина и пароля от пользователя:
 if ($_POST['login'] && $_POST['password']){
     authUser(); // Выполним авторизацию
@@ -14,6 +16,7 @@ if ($_POST['login'] && $_POST['password']){
     clearData(); // Почистим данные
     browse(); // Переадресация пользователя
 } elseif ($_POST['user'] != "" && $_SESSION['login'] != ""){
+    $box['image']=getImage(); // Грузим картинку
     updUser(); // Обновим пользователя
     clearData(); // Почистим данные
     browse("/admin"); // Переадресация пользователя
@@ -22,8 +25,22 @@ if ($_POST['login'] && $_POST['password']){
     logout(); // Разлогиним пользователя
     clearData(); // Почистим данные
     browse(); // Переадресация пользователя
+} elseif ($_SESSION['id'] == "" && $_GET['cmd'] == "reset") {
+    resetPass(); // Сброс пароля / генерация токена
+    clearData(); // Почистим данные
+} elseif ($_GET['u_id'] != "" && $_GET['cmd'] == "upd") {
+    setUser(); // Обновление статуса пользователя
+    clearData(); // Почистим данные
+    browse("/admin"); // Переадресация пользователя
 } elseif ($_SESSION['id'] != "") {
+    if ($_SESSION['role'] == "0"){
+        $box['userlist']=getUsers(); // Получим список пользователей
+    }
+    getMailCount(); // Смотрим его непрочитанные письма
+    $box['comments']=getComments("WHERE status=1"); // Примерный запрос, изменить надо...
+    $box['countComments']=count($box['comments']);
     $box['user']=getUser(); // Получим залогиненного пользователя
+    clearData(); // Почистим данные
 }
 // Подключим модуль отображения информации для пользователя:
 include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";

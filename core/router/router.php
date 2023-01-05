@@ -7,7 +7,7 @@ $box=[];
 $box=['route' => explode("/", $_SERVER["REQUEST_URI"])[1]];
 // Анализируем переменную:
 // Если пусто, то мы ссылаемся на главную:
-if ($box['route'] == ""){
+if ($box['route'] == "" || stripos($box['route'], "?page=") !== false){ // Проверка на пустоту или номер страницы
     // Главный контроллер:
     $box['route']="index";
 }
