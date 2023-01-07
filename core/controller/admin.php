@@ -32,6 +32,16 @@ if ($_POST['login'] && $_POST['password']){
     setUser(); // Обновление статуса пользователя
     clearData(); // Почистим данные
     browse("/admin"); // Переадресация пользователя
+} elseif ($_POST['CountPost'] && $_POST['CountMessage'] && $_POST['theme']){
+    $_POST['theme']=clear($_POST['theme']);
+    $_POST['CountPost']=chislo(clear($_POST['CountPost']));
+    $_POST['CountMessage']=chislo(clear($_POST['CountMessage']));
+    $box['config']['site']['CountPost']=$_POST['CountPost'];
+    $box['config']['site']['CountMessage']=$_POST['CountMessage'];
+    $box['config']['site']['theme']=$_POST['theme'];
+    updConf();
+    clearData(); // Почистим данные
+    browse("/admin"); // Переадресация пользователя
 } elseif ($_SESSION['id'] != "") {
     if ($_SESSION['role'] == "0"){
         $box['userlist']=getUsers(); // Получим список пользователей
@@ -42,5 +52,3 @@ if ($_POST['login'] && $_POST['password']){
     $box['user']=getUser(); // Получим залогиненного пользователя
     clearData(); // Почистим данные
 }
-// Подключим модуль отображения информации для пользователя:
-include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";

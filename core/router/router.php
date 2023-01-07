@@ -1,6 +1,8 @@
 <?php
 // Смотрим сессию:
 session_start();
+// Подключаем модели:
+include_once "../core/model/functions.php"; // Функционал сайта
 // Откроем нашу коробку с переменными:
 $box=[];
 // Путь перехода по папкам (в нашем случае - имя контроллера)
@@ -18,3 +20,4 @@ if (!file_exists("../core/controller/".$box['route'].".php")) {
 }
 // Передаем управление определенному контроллеру.
 include_once "../core/controller/".$box['route'].".php";
+render();

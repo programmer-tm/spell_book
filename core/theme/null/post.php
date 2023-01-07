@@ -104,10 +104,18 @@ if ($_SESSION['role'] || $_SESSION['role'] == "0"){
     }
 }
 
-echo '<form action="?id='.$box['post']['id'].'&cmd=addComment" method="post" enctype="multipart/form-data">
-<input type="text" placeholder="Имя/Ник" name="comment[name]" required><br>
-<input type="email" placeholder="Email" name="comment[email]" required><br>
-<textarea placeholder="Комментарий" name="comment[text]" rows="19" cols="44"></textarea><br>
-<button type="submit">Комментировать</button>
-<button type="reset" class="cancelbtn">Очистить</button><br>
-</form>';
+if ($_SESSION['id'] != ""){
+    echo '<form action="?id='.$box['post']['id'].'&cmd=addComment" method="post" enctype="multipart/form-data">
+    <textarea placeholder="Комментарий" name="comment[text]" rows="19" cols="44"></textarea><br>
+    <button type="submit">Комментировать</button>
+    <button type="reset" class="cancelbtn">Очистить</button><br>
+    </form>';
+} else {
+    echo '<form action="?id='.$box['post']['id'].'&cmd=addComment" method="post" enctype="multipart/form-data">
+    <input type="text" placeholder="Имя/Ник" name="comment[name]" required><br>
+    <input type="email" placeholder="Email" name="comment[email]" required><br>
+    <textarea placeholder="Комментарий" name="comment[text]" rows="19" cols="44"></textarea><br>
+    <button type="submit">Комментировать</button>
+    <button type="reset" class="cancelbtn">Очистить</button><br>
+    </form>';
+}

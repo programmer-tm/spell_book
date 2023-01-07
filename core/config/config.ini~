@@ -1,11 +1,10 @@
 [site]
 title = 'Книга заклинаний'
 theme = 'null'
-CountPost = '4'
-CountMessage = '4'
+CountPost = '3'
 [sql]
 host = 'localhost'
 port = '3306'
 login = 'root'
 password = 'root'
-bd = 'spell_book'
+bd = ''

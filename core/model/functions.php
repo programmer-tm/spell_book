@@ -238,7 +238,10 @@ function addComment(){
     $_POST['comment']['name']=clear($_POST['comment']['name']);
     $_POST['comment']['text']=clear($_POST['comment']['text']);
     $_POST['comment']['email']=clear($_POST['comment']['email']);
-    if ($_SESSION['id'] != ""){
+    if ($_SESSION['id'] != "" && $_SESSION['role'] != "2"){
+        $user=getUser();
+        $box['params']="(`post_id`, `name`, `text`, `email`, `status`) VALUES ('{$_GET['id']}', '{$user['nickname']}', '{$_POST['comment']['text']}', '{$user['email']}', '0')";
+    } elseif ($_SESSION['id'] != ""){
         $user=getUser();
         $box['params']="(`post_id`, `name`, `text`, `email`) VALUES ('{$_GET['id']}', '{$user['nickname']}', '{$_POST['comment']['text']}', '{$user['email']}')";
     } else {
@@ -400,7 +403,9 @@ function getUsers($cmd=""){
 function addMessage(){
     global $box;
     $_POST['to_id']=chislo(clear($_POST['to_id']));
-    if ($_SESSION['id'] != "" && $_POST['to_id'] != $_SESSION['id']){
+    $box['params']="SELECT count(`id`) as count FROM `messages` where `from_id` = '{$_SESSION['id']}'";
+    $mCount=freeContent()['0']['count'];
+    if ($mCount < $box['config']['site']['CountMessage'] && $_SESSION['id'] != "" && $_POST['to_id'] != $_SESSION['id']){
         $_POST['message']=clear($_POST['message']);
         $box['table']="messages";
         $box['params']="(`from_id`, `to_id`, `message`) VALUES ('{$_SESSION['id']}', '{$_POST['to_id']}', '{$_POST['message']}')";
@@ -586,4 +591,153 @@ function setUser(){
             updContent();
         }
     }
+}
+
+// Блок настройки конфига:
+function updConf(){
+    global $box;
+    $fp = fopen('../core/config/config.ini', 'w+');
+    foreach($box['config'] as $parts => $array){
+        fwrite($fp, "[{$parts}]\n");
+        foreach($array as $params => $value){
+            fwrite($fp, "$params = '$value'\n");
+        }
+    }
+    fclose($fp);
+}
+
+// Установка таблиц:
+function setTable(){
+    global $box;
+    // Установим таблицы:
+    $box['params'] = "CREATE TABLE `comments` (
+        `id` int(11) NOT NULL,
+        `post_id` int(11) DEFAULT NULL,
+        `name` varchar(20) NOT NULL,
+        `email` varchar(100) NOT NULL,
+        `text` varchar(255) NOT NULL,
+        `moder_id` int(11) DEFAULT NULL,
+        `status` tinyint(4) NOT NULL DEFAULT 1,
+        `date_write` date NOT NULL DEFAULT current_timestamp(),
+        `date_modification` date DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+    addTable();
+    // Комменты залили
+    $box['params'] = "CREATE TABLE `posts` (
+        `id` int(11) NOT NULL,
+        `title` varchar(50) NOT NULL,
+        `text` text NOT NULL,
+        `date_write` date NOT NULL,
+        `readings` int(11) NOT NULL DEFAULT 0,
+        `image` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+    addTable();
+    // Посты залили
+    $box['params'] = "CREATE TABLE `users` (
+        `id` int(11) NOT NULL,
+        `nickname` varchar(13) NOT NULL,
+        `name` varchar(20) NOT NULL,
+        `surename` varchar(25) NOT NULL,
+        `email` varchar(100) NOT NULL,
+        `role` tinyint(4) NOT NULL DEFAULT 2,
+        `password` varchar(255) NOT NULL,
+        `date_register` date NOT NULL DEFAULT current_timestamp(),
+        `date_login` date DEFAULT NULL,
+        `avatar` varchar(255) DEFAULT NULL,
+        `token` varchar(16) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+    addTable();
+    // Юзеров залили
+    $box['params'] = "CREATE TABLE `messages` (
+        `id` int(11) NOT NULL,
+        `from_id` int(11) NOT NULL,
+        `to_id` int(11) NOT NULL,
+        `message` varchar(255) NOT NULL,
+        `date_write` date NOT NULL DEFAULT current_timestamp(),
+        `date_read` date DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+    addTable();
+    // Залили таблицу личных сообщений
+    // Добавим логику БД:
+    $box['params'] = "ALTER TABLE `comments`
+        ADD PRIMARY KEY (`id`),
+        ADD KEY `status` (`status`);";
+    addTable();
+    $box['params'] = "ALTER TABLE `messages`
+        ADD PRIMARY KEY (`id`),
+        ADD KEY `from_id` (`from_id`),
+        ADD KEY `to_id` (`to_id`);";
+    addTable();
+    $box['params'] = "ALTER TABLE `posts`
+        ADD PRIMARY KEY (`id`);";
+    addTable();
+    $box['params'] = "ALTER TABLE `users`
+        ADD PRIMARY KEY (`id`),
+        ADD UNIQUE KEY `nickname` (`nickname`),
+        ADD UNIQUE KEY `email` (`email`),
+        ADD UNIQUE KEY `token` (`token`);";
+    addTable();
+    // Обнуляем автоинкременты...
+    $box['params'] = "ALTER TABLE `comments`
+        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;";
+    addTable();
+    $box['params'] = "ALTER TABLE `messages`
+        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;";
+    addTable();
+    $box['params'] = "ALTER TABLE `posts`
+        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;";
+    addTable();
+    $box['params'] = "ALTER TABLE `users`
+        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;";
+    addTable();
+    // Добавим админа:
+    if (!empty($_POST['admin'])){
+        $_POST['admin']['nickname']=clear($_POST['admin']['nickname']);
+        $_POST['admin']['name']=clear($_POST['admin']['name']);
+        $_POST['admin']['surename']=clear($_POST['admin']['surename']);
+        $_POST['admin']['email']=clear($_POST['admin']['email']);
+        $_POST['admin']['password']=password_hash(clear($_POST['admin']['password']), PASSWORD_DEFAULT);   
+    }
+    // Добавим админа в базу:
+    $box['params'] = "INSERT INTO `users` (`id`, `nickname`, `name`, `surename`, `email`, `role`, `password`) VALUES
+    (1, '{$_POST['admin']['nickname']}', '{$_POST['admin']['name']}', '{$_POST['admin']['surename']}', '{$_POST['admin']['email']}', 0, '{$_POST['admin']['password']}');";
+    addTable();
+}
+
+// Проверим отсутствие таблиц
+function checkTables(){
+    global $box;
+    $box['params']="SHOW TABLES like 'posts'";
+    $posts=freeContent();
+    $box['params']="SHOW TABLES like 'comments'";
+    $comments=freeContent();
+    $box['params']="SHOW TABLES like 'users'";
+    $users=freeContent();
+    $box['params']="SHOW TABLES like 'messages'";
+    $messages=freeContent();
+    if (empty($users) && empty($posts) && empty($messages) && empty($comments)){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Блок проверки конфига:
+function checkConf(){
+    global $box;
+    foreach($_POST['config'] as $parts => $array){
+        foreach($array as $params => $value){
+            $_POST['config']["$parts"]["$params"]=clear($value);
+        }
+    }
+}
+
+// Функция рендеринга
+function render(){
+    global $box;
+    ob_start();
+    include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
+    $data = ob_get_contents();
+    ob_end_clean();
+    include_once "../core/theme/".$box['config']['site']['theme']."/main.php";
 }

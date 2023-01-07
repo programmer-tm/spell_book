@@ -22,9 +22,7 @@ if ($_SESSION['id']){
     getMail(); // Получим списки сообщений
     $box['userlist']=getUsers(); // Получим список пользователей
     clearData(); // Проведем очистку переменных
-    // Подключим модуль отображения информации для пользователя:
-    include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
 } else {
-    // Подключим модуль отображения информации для пользователя (404):
-    include_once "../core/controller/404.php";
+    include_once "../core/model/functions.php"; // Функционал сайта
+    browse(); // Возврат на главную страницу
 }

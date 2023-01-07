@@ -34,6 +34,13 @@ if ($_SESSION['login']){
             }
             echo "<br>";
         }
+        echo "Управление настройками сайта:<br>";
+        echo '<form action="/admin" method="post" enctype="multipart/form-data">
+            <input type="number" value="'.$box['config']['site']['CountPost'].'" name="CountPost" required><br>
+            <input type="number" value="'.$box['config']['site']['CountMessage'].'" name="CountMessage" required><br>
+            <input type="text" value="'.$box['config']['site']['theme'].'" name="theme" required><br>
+            <button type="submit">Изменить</button> <button type="reset" class="cancelbtn">Отменить всё!</button>
+            </form>';
     }
     //echo '<pre>';
     //var_dump(get_defined_vars());

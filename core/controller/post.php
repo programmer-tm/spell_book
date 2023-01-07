@@ -43,11 +43,8 @@ if ($box['post'] != ""){ // Есть пост...
     } else {
         updReadPost(); // Обновим прочтения
         clearData(); // Почистим данные
-        // Подключим модуль отображения информации для пользователя:
-        include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
     } 
 } else {
     clearData(); // Почистим данные
-    // Подключим модуль отображения информации для пользователя:
-    include_once "../core/controller/404.php";
+    browse("/404");
 }
