@@ -4,6 +4,7 @@ include_once "../core/model/functions.php"; // Функционал сайта
 getConfig(); // Получим конфиг
 getDB(); // Получим БД
 getPost(); // Получим пост
+$box['page']=$box['post']['title']; // Отображение в шапке сайта
 getMailCount(); // Смотрим его непрочитанные письма
 $box['userlist']=getUsers("all"); // Получим список пользователей
 $_GET['cmd']=clear($_GET['cmd']); // Смотрим команду управления

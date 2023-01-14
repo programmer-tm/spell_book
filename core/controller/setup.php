@@ -3,6 +3,7 @@
 include_once "../core/model/functions.php"; // Функционал сайта
 getConfig(); // Получим конфиг
 getDB(); // Получим БД
+$box['page']="Страница установки"; // Отображение в шапке сайта
 checkConf(); // Проверка входных данных:
 if (!empty($_POST['config'])){
     $box['config']=$_POST['config'];

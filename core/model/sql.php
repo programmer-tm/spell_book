@@ -1,2 +1,0 @@
-<?php
-$box['db'] = dbConnect();

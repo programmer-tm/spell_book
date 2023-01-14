@@ -1,0 +1,667 @@
+﻿/*
+Theme Name: Scroll
+Author: Ophelia Nicholson
+RIP by: Nikita Kushnir(AgManiX)
+Modded by: Programmer-tm
+www.php-engines.do.am
+www.agmanix.tk
+Programmer-tm.h1n.ru (programmer-tm.narod.ru)
+*/
+
+/* General */
+
+@font-face {
+	font-family: "Olietta script Lyrica BoldItalic"; 
+	src: url("../fonts/ofont.ru_Olietta script Lyrica.ttf") format("truetype");
+	font-style: normal;
+	font-weight: normal;
+}
+
+@font-face {
+	font-family: 'Magnolia Script';
+	src: url('../fonts/Magnoliascript.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Miama Nueva';
+	src: url('../fonts/miama.otf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	margin: 0;
+	background: #000000;
+}
+
+h1, h2, h3, h4 {
+	margin: 0;
+}
+
+img {
+	border: 0;
+}
+
+.clear {
+	clear: both;
+	height: 0;
+	overflow: hidden;
+}
+
+
+/* Page */
+
+#page {
+	margin: 0 auto;
+	width: 980px;
+	background: url("../images/page.jpg") repeat-y;
+}
+
+#page-top {
+	width: 980px;
+	background: url("../images/page_top.jpg") no-repeat;
+}
+
+#page-bottom {
+	width: 980px;
+	background: url("../images/page_bottom.jpg") no-repeat left bottom;
+}
+
+
+/* Header */
+
+#header {
+	width: 980px;
+	height: 237px;
+	position: relative;
+}
+
+	/* Header - Info */
+	
+	#header #header-info {
+		position: absolute;
+		top: 52px;
+		left: 200px;
+		width: 500px;
+	}
+
+	#header #header-info h1 {
+		color: #333333;
+		font: normal 52px 'Olietta script Lyrica BoldItalic';
+		padding-bottom: 5px;
+	}
+	
+	#header #header-info h1 a {
+		color: #990000;
+		text-decoration: none;
+	}
+	
+	#header #header-info .description {
+		color: #333333;
+		padding-left: 40px;
+		font: normal 22px 'Olietta script Lyrica BoldItalic';
+	}
+	
+	/* Header - Menu */
+	
+	#header #header-menu {
+		position: absolute;
+		top: 170px;
+		left: 100px;
+		width: 770px;
+		height: 36px;
+	}
+	
+	#header #header-menu ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+		height: 36px;
+	}
+	
+	#header #header-menu ul li {
+		float: left;
+		height: 36px;
+		font: normal 16px/36px 'Magnolia Script';
+		color: #333333;
+		padding: 0 25px;
+	}
+	
+	#header #header-menu ul li a {
+		color: #990000;
+		text-decoration: none;
+	}
+	
+	#header #header-menu ul li a:hover {
+		text-decoration: underline;
+	}
+	
+	#header #header-menu ul li ul {
+		display: none;
+	}
+	
+	/* Header - Feed */
+	
+	#header #header-feed {
+		position: absolute;
+		top: 62px;
+		left: 765px;
+		width: 125px;
+		height: 50px;
+	}
+
+
+/* Main */
+
+#main {
+	width: 980px;
+}
+
+	/* Main - Sidebar */
+	
+	#sidebar {
+		float: left;
+		width: 225px;
+		padding: 0 18px 0 88px;
+		font: normal 12px/18px 'Magnolia Script';
+		color: #333333;
+	}
+	
+	#sidebar a {
+		color: #990000;
+		text-decoration: none;
+	}
+	
+	#sidebar a:hover {
+		text-decoration: underline;
+	}
+	
+	/* Main - Sidebar - Boxes */
+	
+	#sidebar .sidebar-box {
+		width: 225px;
+		margin-bottom: 20px;
+	}
+	
+		#sidebar .sidebar-box-blank {
+			width: 225px;
+			margin-bottom: 20px;
+			text-align: center;
+		}
+	
+	#sidebar .sidebar-box-in {
+		width: 205px;
+		background: url("../images/sidebar_box_in.png") repeat-y;
+		padding-left: 20px;
+	}
+	
+	#sidebar .sidebar-box-in-img{
+		border-radius: 100%;
+		width: 30px;
+		height: 30px;
+		margin-top: 2px;
+	}
+
+	#sidebar .sidebar-box-top {
+		width: 225px;
+		height: 53px;
+		background: url("../images/sidebar_box_top.png") no-repeat;
+	}
+	
+	#sidebar .sidebar-box-bottom {
+		width: 225px;
+		height: 30px;
+		background: url("../images/sidebar_box_bottom.png") no-repeat;
+	}
+	
+		/* Sidebar - Titles */
+		
+		#sidebar h3 {
+			font: bold 12px 'Magnolia Script';
+			color: #333333;
+			padding-bottom: 10px;
+		}
+		
+		/* Sidebar - Menus */
+		
+		#sidebar ul {
+			margin: 0;
+			padding: 0 0 5px 5px;
+			list-style-type: none;
+		}
+		
+		#sidebar ul li {
+			padding-left: 22px;
+			background: url("../images/sidebar_menu.gif") no-repeat;
+			font: normal 11px/26px 'Magnolia Script';
+			color: #333333;
+		}
+		
+		#sidebar ul li a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#sidebar ul li a:hover {
+			text-decoration: underline;
+		}
+		
+			/* Sidebar - Menus - Submenus */
+			
+			#sidebar ul li ul {
+				padding: 0;
+			}
+		
+
+		/* Sidebar - Tables */
+		
+		#sidebar #calendar_wrap {
+			width: 142px;
+			margin: 0 auto;
+			padding: 0 20px 5px 0;
+		}
+		
+		#sidebar #calendar_wrap caption {
+			font-weight: bold;
+		}
+		
+		#sidebar #calendar_wrap tbody {
+			text-align: right;
+		}
+		
+		#sidebar #calendar_wrap tfoot #next {
+			text-align: right;
+		}
+		
+		#sidebar #calendar_wrap #today {
+			font-weight: bold;
+		}
+		
+		/* Sidebar - Texts */
+		
+		#sidebar .textwidget {
+			padding: 0 20px 5px 0;
+		}
+	
+	/* Main - Content */
+	
+	#content {
+		float: left;
+		width: 580px;
+	}
+	
+	/* Main - Content - Post */
+	
+	#content .post {
+		float: left;
+		margin-bottom: 30px;
+		width: 580px;
+	}
+
+		/* Post - Title */
+		
+		#content .post .post-title {
+			width: 540px;
+			padding: 0 20px;
+			height: 72px;
+			font: normal 12px 'Magnolia Script';
+			color: #333333;
+			background: url("../images/post_title.png") no-repeat;
+		}
+		
+		#content .post .post-title a {
+			color: #990000;
+			text-decoration: none;
+			font-weight: bold;
+		}
+		
+		#content .post .post-title a:hover {
+			text-decoration: underline;
+		}
+		
+		#content .post .post-title .author {
+			color: #333333;
+			font-weight: bold;
+		}
+		
+		#content .post .post-title h2 {
+			color: #333333;
+			font: normal 32px 'Olietta script Lyrica BoldItalic';
+			padding: 15px 0 5px 0;
+		}
+		
+		#content .post .post-title h2 a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post .post-title h2 a:hover {
+			text-decoration: underline;
+		}
+		
+		#content .post .post-title .post-date {
+			float: right;
+			font: bold 15px 'Magnolia Script';
+			color: #333333;
+			text-align: left;
+			background: url("../images/post_date.png") no-repeat;
+			width: 60px;
+			height: 72px;
+			text-transform: lowercase;
+		}
+		#content .post-date-img{
+			border-radius: 100%;
+			width: 35px;
+			height: 35px;
+			margin-top: -2px;
+			margin-left: 12px;
+		}
+
+		#content .post-date-title{
+			margin-top: 13px;
+			text-align: center;
+		}
+		
+		#content .post .post-title .post-date span {
+			padding-top: 14px;
+			display: block;
+			font: bold 20px Georgia, Verdana;
+		}
+		
+		/* Post - Entry */
+		
+		#content .post .post-entry {
+			font: normal 13px/18px 'Magnolia Script';
+			color: #333333;
+			width: 560px;
+			padding: 0 10px;
+			clear: both;
+		}
+
+		#content .post-entry-img{
+			clip-path: polygon(3% 0, 7% 1%, 11% 0%, 16% 2%, 20% 0, 23% 2%, 28% 2%, 32% 1%, 35% 1%, 39% 3%, 41% 1%, 45% 0%, 47% 2%, 50% 2%, 53% 0, 58% 2%, 60% 2%, 63% 1%, 65% 0%, 67% 2%, 69% 2%, 73% 1%, 76% 1%, 79% 0, 82% 1%, 85% 0, 87% 1%, 89% 0, 92% 1%, 96% 0, 98% 3%, 99% 3%, 99% 6%, 100% 11%, 98% 15%, 100% 21%, 99% 28%, 100% 32%, 99% 35%, 99% 40%, 100% 43%, 99% 48%, 100% 53%, 100% 57%, 99% 60%, 100% 64%, 100% 68%, 99% 72%, 100% 75%, 100% 79%, 99% 83%, 100% 86%, 100% 90%, 99% 94%, 99% 98%, 95% 99%, 92% 99%, 89% 100%, 86% 99%, 83% 100%, 77% 99%, 72% 100%, 66% 98%, 62% 100%, 59% 99%, 54% 99%, 49% 100%, 46% 98%, 43% 100%, 40% 98%, 38% 100%, 35% 99%, 31% 100%, 28% 99%, 25% 99%, 22% 100%, 19% 99%, 16% 100%, 13% 99%, 10% 99%, 7% 100%, 4% 99%, 2% 97%, 1% 97%, 0% 94%, 1% 89%, 0% 84%, 1% 81%, 0 76%, 0 71%, 1% 66%, 0% 64%, 0% 61%, 0% 59%, 1% 54%, 0% 49%, 1% 45%, 0% 40%, 1% 37%, 0% 34%, 1% 29%, 0% 23%, 2% 20%, 1% 17%, 1% 13%, 0 10%, 1% 6%, 1% 3%);
+			width: 95px;
+			height: 70px;
+			margin-top: 2px;
+		}
+		#content .post-entry-img-avatar{
+			border-radius: 100%;
+			width: 100px;
+			height: 100px;
+			margin-top: 2px;
+			margin-left: 12px;
+		}
+		#content .post-entry-img-post{
+			border-radius: 100%;
+			width: 270px;
+			height: 270px;
+			margin-top: 1px;
+		}
+		
+		#content .post-entry-img-big{
+			clip-path: polygon(3% 0, 7% 1%, 11% 0%, 16% 2%, 20% 0, 23% 2%, 28% 2%, 32% 1%, 35% 1%, 39% 3%, 41% 1%, 45% 0%, 47% 2%, 50% 2%, 53% 0, 58% 2%, 60% 2%, 63% 1%, 65% 0%, 67% 2%, 69% 2%, 73% 1%, 76% 1%, 79% 0, 82% 1%, 85% 0, 87% 1%, 89% 0, 92% 1%, 96% 0, 98% 3%, 99% 3%, 99% 6%, 100% 11%, 98% 15%, 100% 21%, 99% 28%, 100% 32%, 99% 35%, 99% 40%, 100% 43%, 99% 48%, 100% 53%, 100% 57%, 99% 60%, 100% 64%, 100% 68%, 99% 72%, 100% 75%, 100% 79%, 99% 83%, 100% 86%, 100% 90%, 99% 94%, 99% 98%, 95% 99%, 92% 99%, 89% 100%, 86% 99%, 83% 100%, 77% 99%, 72% 100%, 66% 98%, 62% 100%, 59% 99%, 54% 99%, 49% 100%, 46% 98%, 43% 100%, 40% 98%, 38% 100%, 35% 99%, 31% 100%, 28% 99%, 25% 99%, 22% 100%, 19% 99%, 16% 100%, 13% 99%, 10% 99%, 7% 100%, 4% 99%, 2% 97%, 1% 97%, 0% 94%, 1% 89%, 0% 84%, 1% 81%, 0 76%, 0 71%, 1% 66%, 0% 64%, 0% 61%, 0% 59%, 1% 54%, 0% 49%, 1% 45%, 0% 40%, 1% 37%, 0% 34%, 1% 29%, 0% 23%, 2% 20%, 1% 17%, 1% 13%, 0 10%, 1% 6%, 1% 3%);
+			width: 540px;
+			height: 370px;
+			margin-top: 2px;
+		}
+
+		#content .post .post-entry a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post .post-entry a:hover {
+			text-decoration: underline;
+		}
+		
+		#content .post .post-entry a.more-link {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post .post-entry  a.more-link:hover {
+			text-decoration: underline;
+		}
+		
+		/* Post - Info */
+		
+		#content .post .post-info {
+			padding: 0px 0px 0 60px;
+			width: 515px;
+			height: 28px;
+			clear: both;
+			background: url("../images/post_info.png") no-repeat;
+			font: normal 11px/28px 'Magnolia Script';
+			color: #333333;
+		}
+		
+		#content .post .post-info a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post .post-info a:hover {
+			text-decoration: underline;
+		}
+		
+		/* Post - Comments */
+		
+		#content .post h3 {
+			color: #333333;
+			font: bold 15px Georgia, Verdana;
+			margin: 20px 0 10px 0;
+		}
+		
+		#content .post .comments {
+			font: normal 11px/18px 'Magnolia Script';
+			color: #333333;
+			width: 560px;
+		}
+		
+		#content .post .comments ol {
+			margin: 10px 0;
+			padding-left: 25px;
+		}
+		
+		#content .post .comments ol li {
+			padding: 5px;
+		}
+		
+		#content .post .comments ol li a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post .comments ol li a:hover {
+			text-decoration: underline;
+		}
+		
+		#content .post .comments ol li.alt {
+			background: #d5b478;
+		}
+		
+		#content .post .comments ol li cite {
+			color: #990000;
+			font-style: normal;
+			font-weight: bold;
+		}
+		
+		#content .post .comments ol li cite a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post .comments ol li cite a:hover {
+			text-decoration: underline;
+		}
+		
+		#content .post .comments ol li .commentmetadata a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post .comments ol li .commentmetadata a:hover {
+			text-decoration: underline;
+		}
+		
+		#content .post #commentform {
+			font: normal 11px/18px 'Magnolia Script';
+			color: #333333;
+			width: 535px;
+			margin: 0;
+			padding-left: 25px;
+		}
+		
+		#content .post #commentform a {
+			color: #990000;
+			text-decoration: none;
+		}
+		
+		#content .post #commentform a:hover {
+			text-decoration: underline;
+		}
+	
+	/* Main - Content - Navigation */
+	
+	#content .navigation {
+		font: bold 11px 'Magnolia Script';
+		color: #990000;
+		width: 560px;
+		margin-bottom: 30px;
+		float: left;
+		padding: 0 10px;
+	}
+	
+	#content .navigation a {
+		color: #990000;
+		text-decoration: none;
+	}
+	
+	#content .navigation a:hover {
+		text-decoration: underline;
+	}
+	
+		#content .navigation .navigation-previous {
+			float: left;
+		}
+		
+		#content .navigation .navigation-next {
+			float: right;
+		}
+
+
+/* Footer */
+
+#footer {
+	width: 800px;
+	height: 150px;
+	color: #4f3b22;
+	font: normal 18px/120px 'Olietta script Lyrica BoldItalic';
+	text-align: right;
+	padding: 10px 90px 0 90px;
+}
+
+#footer a {
+	color: #990000;
+	text-decoration: none;
+}
+
+#footer a:hover {
+	text-decoration: underline;
+}
+
+.menu-img{
+	border-radius: 100%;
+	width: 45px;
+	height: 45px;
+	margin-top: 5px;
+}
+
+input,select,textarea,button,label,input[type="file"]{
+	font: normal 11px/18px 'Magnolia Script';
+	color: #990000;
+}
+
+button,input[type="button"],input[type="file"]{
+	border-radius: 7px; 
+	border: none;
+}
+
+.zagl_otziv{
+	margin-left: 4vh;
+}
+
+.td_3{
+	width: 33%;
+}
+
+.td_2{
+	width: 50%;
+}
+
+.td_4{
+	width: 25%;
+}
+.td_6{
+	width: 16%;
+}
+
+.t_c_89{
+	width: 89%;
+}
+
+.t_c_92{
+	width: 92%;
+}
+
+.t_c_94{
+	width: 94%;
+}
+
+.t_c_95{
+	width: 95%;
+}
+
+.t_c_97{
+	width: 97%;
+}
+
+.t_c_98{
+	width: 98%;
+}
+
+.form_otziv{
+	width: 180px;
+	margin-bottom: 4px;
+}
+
+.form_sel_us{
+	width: 550px;
+}
+
+.form_in_mes{
+	width: 544px; height: 200px;
+}
+
+.form_in_otz_p{
+	width: 544px;
+	margin-bottom: 4px;
+}
+
+.form_in_otz_p_b{
+	width: 544px;
+	height: 200px;
+	margin-bottom: 4px;
+}
+
+.form_in_reg{
+	width: 440px;
+	margin-bottom: 4px;
+}
+
+.form_in_menu{
+	width: 180px;
+	margin-bottom: 4px;
+}

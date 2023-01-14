@@ -130,7 +130,7 @@ function authUser(){
         $_SESSION['login']=$box['user']['nickname'];
         $_SESSION['role']=$box['user']['role'];
         $_SESSION['avatar']=$box['user']['avatar'];
-        $box['params'] = "SET `date_login` = '".date("Y-m-d")."' where `id` = '{$_SESSION['id']}'";
+        $box['params'] = "SET `date_login` = '".date("Y-m-d")."', `token` = NULL where `id` = '{$_SESSION['id']}'";
         updContent();
     }
 }
@@ -159,7 +159,7 @@ function getComments($params=""){
     $box['table']="comments";
     if ($params != ""){
         $box['params']=$params;
-    } else{
+    } else {
         $box['params']="where `post_id` = '{$_GET['id']}'";
     }
     return allContent();
@@ -176,7 +176,11 @@ function updPost(){
         $_POST['post']['title']=clear($_POST['post']['title']);
         $_POST['post']['text']=clear($_POST['post']['text']);
         $box['table']='posts';
-        $box['params']="SET `title` = '{$_POST['post']['title']}', `text` = '{$_POST['post']['text']}', `image` = '{$box['image']}' where id = '{$_GET['id']}'";
+        if ($box['image'] != ""){
+            $box['params']="SET `title` = '{$_POST['post']['title']}', `text` = '{$_POST['post']['text']}', `image` = '{$box['image']}' where id = '{$_GET['id']}'";
+        } else {
+            $box['params']="SET `title` = '{$_POST['post']['title']}', `text` = '{$_POST['post']['text']}' where id = '{$_GET['id']}'";
+        }
         updContent();
     }
 }
@@ -185,7 +189,7 @@ function updPost(){
 function updComment(){
     global $box;
     $comment=getComment($_POST['comment']['id']);
-    if ($_SESSION['role'] != "2" || $comment['name'] == $_SESSION['login']){
+    if (($_SESSION['role'] != "2" && $_SESSION['id'] != "")|| $comment['name'] == $_SESSION['login']){
         $_POST['comment']['name']=clear($_POST['comment']['name']);
         $_POST['comment']['text']=clear($_POST['comment']['text']);
         $box['table']='comments';
@@ -334,6 +338,8 @@ function updUser(){
     if ($box['image'] != ""){
         delImage($user['avatar']);
         $_SESSION['avatar'] = $box['image'];
+    } else {
+        $box['image'] = $user['avatar'];
     }
     if ($_SESSION['id'] !="" && !empty($user)){
         $_POST['user']['name']=clear($_POST['user']['name']);
@@ -428,10 +434,15 @@ function getPosts(){
     global $box;
     $_GET['page']=chislo(clear($_GET['page']));
     $box['table']="posts"; // Выберем таблицу с записями
-    if ($box['config']['site']['CountPost'] != ""){
+    if ($box['config']['site']['CountPost'] != "" && $box['config']['site']['CountPost'] != "0"){
         $box['params']="SELECT count(id) as postCount FROM `{$box['table']}`";
         $box['pCount']=freeContent()['0']['postCount'];
-        $box['pMax'] = (int)($box['pCount'] / $box['config']['site']['CountPost']);
+        $x=(int)($box['pCount'] % $box['config']['site']['CountPost']);
+        if ($x != "0" ){
+            $box['pMax'] = (int)($box['pCount'] / $box['config']['site']['CountPost']) + 1;
+        } else {
+            $box['pMax'] = (int)($box['pCount'] / $box['config']['site']['CountPost']);
+        }
         if ($_GET['page'] == '0' || $_GET['page'] == '1'){
             $box['params']="order by id desc LIMIT {$box['config']['site']['CountPost']} OFFSET 0";
         } else {
@@ -737,7 +748,7 @@ function render(){
     global $box;
     ob_start();
     include_once "../core/theme/".$box['config']['site']['theme']."/".$box['route'].".php";
-    $data = ob_get_contents();
+    $box['data'] = ob_get_contents();
     ob_end_clean();
     include_once "../core/theme/".$box['config']['site']['theme']."/main.php";
 }

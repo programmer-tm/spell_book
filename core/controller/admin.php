@@ -3,6 +3,7 @@
 include_once "../core/model/functions.php"; // Функционал сайта
 getConfig(); // Получим конфиг
 getDB(); // Получим БД
+$box['page']="Твой мир"; // Отображение в шапке сайта
 $_GET['cmd']=clear($_GET['cmd']); // Смотрим команду управления
 $_GET['t_id']=clear($_GET['t_id']); // Смотрим токен
 $_GET['u_id']=chislo(clear($_GET['u_id'])); // Смотрим пользователя

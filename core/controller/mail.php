@@ -4,6 +4,7 @@ if ($_SESSION['id']){
     include_once "../core/model/functions.php"; // Функционал сайта
     getConfig(); // Получим конфиг
     getDB(); // Получим БД
+    $box['page']="Записки"; // Отображение в шапке сайта
     $_GET['cmd']=clear($_GET['cmd']); // Смотрим команду управления
     if ($_POST['to_id'] != "" && $_POST['message'] != ""){
         addMessage(); // Отправка сообщения
