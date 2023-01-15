@@ -34,13 +34,14 @@ if ($_POST['login'] && $_POST['password']){
     clearData(); // Почистим данные
     browse("/admin"); // Переадресация пользователя
 } elseif ($_POST['CountPost'] && $_POST['CountMessage'] && $_POST['theme']){
-    $_POST['theme']=clear($_POST['theme']);
-    $_POST['CountPost']=chislo(clear($_POST['CountPost']));
-    $_POST['CountMessage']=chislo(clear($_POST['CountMessage']));
-    $box['config']['site']['CountPost']=$_POST['CountPost'];
-    $box['config']['site']['CountMessage']=$_POST['CountMessage'];
-    $box['config']['site']['theme']=$_POST['theme'];
-    updConf();
+    $_POST['theme']=clear($_POST['theme']); // Смотрим тему
+    $_POST['CountPost']=chislo(clear($_POST['CountPost'])); // Смотрим число сообщений
+    $_POST['CountMessage']=chislo(clear($_POST['CountMessage'])); // Смотрим число писем
+    // Правим конфиг:
+    $box['config']['site']['CountPost']=$_POST['CountPost']; // Смотрим число сообщений
+    $box['config']['site']['CountMessage']=$_POST['CountMessage'];// Смотрим число писем
+    $box['config']['site']['theme']=$_POST['theme']; // Смотрим тему
+    updConf(); // Пишем конфиг
     clearData(); // Почистим данные
     browse("/admin"); // Переадресация пользователя
 } elseif ($_SESSION['id'] != "") {

@@ -2,14 +2,14 @@
     <div id="right_content">
         <h2>О Вас</h2>
         <form action="/admin" method="post" enctype="multipart/form-data">
-            <img loading="auto" src="/img/<?=$box['user']['avatar'];?>" width="350" height="250" alt="<?=$box['user']['nickname'];?>"><br>
+            <img loading="auto" src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" width="350" height="250" alt="<?=$box['user']['nickname'];?>"><br>
             <input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
             <input class="form_in_reg" type="text" value="<?=$box['user']['name'];?>" name="user[name]" required><br>
             <input class="form_in_reg" type="text" value="<?=$box['user']['surename'];?>" name="user[surename]" required><br>
             <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password]"><br>
             <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password2]"><br>
             <button type="submit">Изменить</button> <button type="reset" class="cancelbtn">Отменить всё!</button><br>
-            <a href="/admin/?cmd=del">Самоликвидироваться!!!</a>
+            <input type="button" onclick="if(confirm('Убить тебя об стенку?!\nЭта операция не обратима!')){document.location.href = '/admin/?cmd=del';};" value="Удалить профиль"/>
         </form>
 		<hr class="hr" align="right">
 	</div>

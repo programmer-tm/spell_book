@@ -2,19 +2,29 @@
     <head>
         <link rel="stylesheet" href="/css/style_notepad.css" type="text/css">
         <title><?=$box['config']['site']['title'];?> : <?=$box['page'];?></title>
+        <?php if($_SESSION['in'] != "3"):?>
+            <?php $_SESSION['in']=$_SESSION['in']+1;?>
+            <script>
+                var message="<?=$_SESSION['alert'];?>";
+                if (message){
+                    alert(message);
+                }
+            </script>
+        <?php else:?>
+            <?php unset($_SESSION['in']); unset($_SESSION['alert']);?>
+        <?php endif;?>
     </head>
     <body>
         <div id="container">
             <div id="content">
                 <div id="left">
-                    <div><a href="/admin"><img src="../img/<?=$_SESSION['avatar'];?>" loading="auto" style="border-radius: 100px; /* Радиус скругления */ width: 80px; height: 80px; padding:10px 10px 10px 10px">
-                    <?php
-			        if (getLogin() != "Гость"){
-				        echo '<center>'.$_SESSION['login'].'(<a href="/mail/" title="Непрочитанных сообщений: '.$box['mail'].'">'.$box['mail'].'</a>)<a title="Приветствуем тебя, пользователь: '.getLogin().'" href="/admin/"></a><br><a href="/logout">Выход</a></center>';
-			        } else {
-    			        echo "<center><a href=/admin>".getLogin()."</a></center>";
-			        }
-			        ?>
+                    <div><a href="/admin"><img src="../img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" loading="auto" style="border-radius: 100px; /* Радиус скругления */ width: 80px; height: 80px; padding:10px 10px 10px 10px">
+                    <?php if (getLogin() != "Гость"):?>
+				        <center><?=$_SESSION['login']?>(<a href="/mail/" title="Непрочитанных сообщений: <?=$box['mail'];?>"><?=$box['mail'];?></a>)<a title="Приветствуем тебя, пользователь: <?=getLogin();?>" href="/admin/"></a><br>
+                        <input type="button" onclick="alert('Уважаемый, <?=$_SESSION['login'];?>, ждем Вас снова в гости!'); document.location.href = '/logout';" value="Выход"/></center>
+                    <?php else:?>
+    			        <center><input type="button" onclick="document.location.href = '/admin';" value="Вход"/></center>
+			        <?php endif;?>
                     </a></div>
                     <div><h1 style="writing-mode: vertical-rl; width: 0; transform: rotate(180deg); padding-top: 20px;"><a href="/"><?=$box['config']['site']['title'];?></a></h1></div>
                 </div>

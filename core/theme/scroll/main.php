@@ -11,30 +11,29 @@
     <meta name="description" content="Сергей, Минеев, стихи, Бредни писателя, Хранитель пустоты, Сайт стихов Сергея Минеева">
     <!--Заголовочная часть-->
     <!-- Тут выводим название проекта из конфига, информационнное сообщение -->
-	<?php if ($message == "error" || $controller == 'logout'):?>
-		<meta http-equiv="refresh" content="0; url=/" />
-	<?php else:?>
-		<title><?=$box['config']['site']['title'];?> : <?=$box['page'];?></title>
-		<script>
-			var message="<?=$_SESSION['message'];?>";
-			if (message){
-				alert(message);
-			}
-			<?php unset($_SESSION["message"]);?>
-		</script>	
-	<?php endif;?>
+	<title><?=$box['config']['site']['title'];?> : <?=$box['page'];?></title>
 	<!--Иконка портала:-->
     <link rel="icon" href="/images/1.ico" type="image/x-icon">
 	<!--Подключаем табличку стилей:-->
     <link rel="stylesheet" type="text/css" href="/css/style_scroll.css" />
 	<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+	<?php if($_SESSION['in'] != "3"):?>
+		<?php $_SESSION['in']=$_SESSION['in']+1;?>
+		<script>
+			var message="<?=$_SESSION['alert'];?>";
+			if (message){
+				alert(message);
+			}
+		</script>
+	<?php else:?>
+		<?php unset($_SESSION['in']); unset($_SESSION['alert']);?>
+	<?php endif;?>
 </head>
 <body>
 	<!--Проверка сообщения для вывода или не в
 	вывода информации:-->
-	<?php if ($message != "error" || $controller == 'logout'):?>
 	<div id="page">
 	<div id="page-top">
 	<div id="page-bottom">
@@ -67,13 +66,13 @@
 	<div class="sidebar-box-top"></div>
 	<div class="sidebar-box-in">
 		<h3>Твой мир:</h3>
-		<h4><?php
-			if (getLogin() != "Гость"){
-				echo $_SESSION['login'].'(<a href="/mail/" title="Непрочитанных сообщений: '.$box['mail'].'">'.$box['mail'].'</a>)<a title="Приветствуем тебя, пользователь: '.getLogin().'" href="/admin/"><img src="/img/'.$_SESSION['avatar'].'" alt="'.$_SESSION['login'].'" align="left" hspace="2" class="menu-img"><br>(Личный кабинет)</a><br><a href="/logout">Выход</a>';
-			} else {
-    			echo "<a href=/admin>".getLogin()."</a><br><br>";
-			}
-			?>
+		<h4>
+			<?php if (getLogin() != "Гость"):?>
+				<?=$_SESSION['login']?>(<a href="/mail/" title="Непрочитанных сообщений: <?=$box['mail'];?>"><?=$box['mail'];?></a>)<a title="Приветствуем тебя, пользователь: <?=getLogin();?>" href="/admin/"><img src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" alt="<?=$_SESSION['login'];?>" align="left" hspace="2" class="menu-img"><br>(Личный кабинет)</a><br>
+                <input type="button" onclick="alert('Уважаемый, <?=$_SESSION['login'];?>, ждем Вас снова в гости!'); document.location.href = '/logout';" value="Выход"/>
+            <?php else:?>
+				<input type="button" onclick="document.location.href = '/admin';" value="Вход на сайт (<?=getLogin();?>)"/>
+			<?php endif;?>
 		</H4>
 	</div>
 	<div class="sidebar-box-bottom"></div>
@@ -92,6 +91,5 @@
 	&copy; Programmer-tm
 	</div>
 	</div></div></div>
-	<?php endif;?>
 </body>
 </html>

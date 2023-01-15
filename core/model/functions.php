@@ -64,6 +64,12 @@ function addTable(){
 }
 // Блок SQL
 
+// Вывод сообщения на сайт:
+function alert($message){
+    $_SESSION['in'] = 1;
+    $_SESSION['alert'] = $message;
+}
+
 // Добавление поста на сайт (права админа):
 function addPost(){
     global $box;
@@ -74,6 +80,7 @@ function addPost(){
         $box['table']='posts';
         $box['params']="(`title`, `text`, `date_write`, `image`) VALUES ('{$_POST['post']['title']}', '{$_POST['post']['text']}', '{$_POST['post']['date_write']}', '{$box['image']}')";
         addContent();
+        alert("Запись успешно добавлена на сайт!");
     }
 }
 
@@ -130,8 +137,11 @@ function authUser(){
         $_SESSION['login']=$box['user']['nickname'];
         $_SESSION['role']=$box['user']['role'];
         $_SESSION['avatar']=$box['user']['avatar'];
+        alert("Здравствуй, {$_SESSION['login']}! Последний раз мы Вас помним: {$box['user']['date_login']}");
         $box['params'] = "SET `date_login` = '".date("Y-m-d")."', `token` = NULL where `id` = '{$_SESSION['id']}'";
         updContent();
+    } else {
+        alert('Внимание неверный пароль или такого пользователя нет на сайте');
     }
 }
 
@@ -182,6 +192,7 @@ function updPost(){
             $box['params']="SET `title` = '{$_POST['post']['title']}', `text` = '{$_POST['post']['text']}' where id = '{$_GET['id']}'";
         }
         updContent();
+        alert("Запись успешно обновлена!");
     }
 }
 
@@ -189,15 +200,22 @@ function updPost(){
 function updComment(){
     global $box;
     $comment=getComment($_POST['comment']['id']);
-    if (($_SESSION['role'] != "2" && $_SESSION['id'] != "")|| $comment['name'] == $_SESSION['login']){
+    if (($_SESSION['role'] != "2" && $_SESSION['id'] != "") || $comment['name'] == $_SESSION['login']){
         $_POST['comment']['name']=clear($_POST['comment']['name']);
         $_POST['comment']['text']=clear($_POST['comment']['text']);
         $box['table']='comments';
-        $box['params']="SET `name` = '{$_POST['comment']['name']}', `text` = '{$_POST['comment']['text']}', `date_modification` = '".date("Y-m-d")."', `status` = '1' where id = '{$_POST['comment']['id']}'";
+        if ($_SESSION['role'] != "2"){
+            $box['params']="SET `name` = '{$_POST['comment']['name']}', `text` = '{$_POST['comment']['text']}', `date_modification` = '".date("Y-m-d")."', `status` = '1' where id = '{$_POST['comment']['id']}'";
+            alert("Комментарий обновлен, отправлен на премодерацию...");
+        } else {
+            $box['params']="SET `name` = '{$_POST['comment']['name']}', `text` = '{$_POST['comment']['text']}', `date_modification` = '".date("Y-m-d")."' where id = '{$_POST['comment']['id']}'";
+            alert("Комментарий обновлен");
+        }
         updContent();
     }
 }
 
+// Сервисная функция для удаления всех комментов по посту или пользователю:
 function delComments($cmd){
     global $box;
     if ($cmd == "post"){
@@ -233,6 +251,7 @@ function delPost(){
         $box['table']="posts";
         $box['params'] = "where id = '{$_GET['id']}'";
         delContent();
+        alert("Запись удалена!");
     }
 }
 
@@ -245,11 +264,14 @@ function addComment(){
     if ($_SESSION['id'] != "" && $_SESSION['role'] != "2"){
         $user=getUser();
         $box['params']="(`post_id`, `name`, `text`, `email`, `status`) VALUES ('{$_GET['id']}', '{$user['nickname']}', '{$_POST['comment']['text']}', '{$user['email']}', '0')";
+        alert("Комментарий добавлен!");
     } elseif ($_SESSION['id'] != ""){
         $user=getUser();
         $box['params']="(`post_id`, `name`, `text`, `email`) VALUES ('{$_GET['id']}', '{$user['nickname']}', '{$_POST['comment']['text']}', '{$user['email']}')";
+        alert("Комментарий отправлен на рассмотрение");
     } else {
         $box['params']="(`post_id`, `name`, `text`, `email`) VALUES ('{$_GET['id']}', '{$_POST['comment']['name']}', '{$_POST['comment']['text']}', '{$_POST['comment']['email']}')";
+        alert("Комментарий отправлен на рассмотрение");
     }
     $box['table']='comments';
     addContent();
@@ -268,14 +290,16 @@ function getComment($id){
 function delComment(){
     global $box;
     $box['table']="comments";
-    if ($_SESSION['status'] == "0"){
+    if ($_SESSION['role'] == "0"){
         $box['params'] = "where id = '{$_GET['c_id']}'";
         delContent();
+        alert("Комментарий удален! Совсем удален!");
     } else {
         $comment=getComment($_GET['c_id']);
         if ($comment['name'] == $_SESSION['login'] || $_SESSION['role'] == "1"){
             $box['params'] = "SET `status` = '2' where id = '{$_GET['c_id']}'";
             updContent();
+            alert("Комментарий удален!");
         }
     }
 }
@@ -290,8 +314,10 @@ function modComment(){
         if ($comment != ""){
             if ($comment['status'] == "1"){
                 $box['params']="SET `status` = '0', `moder_id` = '{$_SESSION['id']}', `date_modification` = '".date("Y-m-d")."' where id = '{$_GET['c_id']}'";
+                alert("Комментарий открыт для всех!");
             } else {
                 $box['params']="SET `status` = '1', `moder_id`  = '{$_SESSION['id']}', `date_modification` = '".date("Y-m-d")."' where id = '{$_GET['c_id']}'";
+                alert("Комментарий закрыт для всех, кроме автора и администрации!");
             }
         }
         updContent();
@@ -316,6 +342,11 @@ function addUser(){
         $_POST['user']['password'] = password_hash($_POST['user']['password'], PASSWORD_DEFAULT);
         $box['params']="(`nickname`, `name`, `surename`, `email`, `password`) VALUES ('{$_POST['user']['nickname']}', '{$_POST['user']['name']}', '{$_POST['user']['surename']}', '{$_POST['user']['email']}', '{$_POST['user']['password']}')";
         addContent();
+        alert("Успешная регистрация!");
+    } elseif($user != "" ) {
+        alert("Такой логин уже занят, придумайте другой!");
+    } elseif($user2 != "" ) {
+        alert("Такой email уже занят, попробуйте восстановить пароль!");
     }
 }
 
@@ -351,8 +382,10 @@ function updUser(){
             if ($_POST['user']['password'] == $_POST['user']['password2'] && $_POST['user']['password'] != ""){
                 $_POST['user']['password'] = password_hash($_POST['user']['password'], PASSWORD_DEFAULT);
                 $box['params']="SET `name` = '{$_POST['user']['name']}', `surename`  = '{$_POST['user']['surename']}', `password` = '{$_POST['user']['password']}',`avatar` = '{$box['image']}'  where id = '{$_SESSION['id']}'";
+                alert("Ваши данные обновлены! Пароль поменяли!");
             } else {
                 $box['params']="SET `name` = '{$_POST['user']['name']}', `surename`  = '{$_POST['user']['surename']}',`avatar` = '{$box['image']}' where id = '{$_SESSION['id']}'";
+                alert("Ваши данные обновлены!");
             }
             updContent();
         }
@@ -416,6 +449,9 @@ function addMessage(){
         $box['table']="messages";
         $box['params']="(`from_id`, `to_id`, `message`) VALUES ('{$_SESSION['id']}', '{$_POST['to_id']}', '{$_POST['message']}')";
         addContent();
+        alert("Депеша отправлена!");
+    } else {
+        alert("Депеша потерялася, вы превысили лимит и голубь подскользнулсо и самоубилсо!");
     }
 }
 
@@ -479,7 +515,7 @@ function getImage(){
         // Проверим, картинка ли это:
         if ($ext == "png" || $ext == "jpeg" || $ext == "gif" || $ext == "jpg" || $ext == "bmp"){
             // Переименуем файл и загрузим к картинкам.
-            function renDownAvatar($ext){
+            function renDown($ext){
                 // Генерим случайное имя:
                 $avatar = substr(md5(time()), 0, 16).".".$ext;
                 // Если его нет, то пишем так:
@@ -487,13 +523,13 @@ function getImage(){
                     move_uploaded_file($_FILES["image"]["tmp_name"], 'img/'. $avatar);
                 } else {
                     // Иначе, ну а вдруг, перезапустим гену снова:
-                    renDownAvatar($ext);
+                    renDown($ext);
                 }
                 // Отдадим поле в код:
                 return $avatar;
             }
             // Отдадим имя файла дальше в код.
-            return renDownAvatar($ext);
+            return renDown($ext);
         }
     }
 }
@@ -515,6 +551,7 @@ function readMail(){
         $box['table']='messages';
         $box['params']="SET `date_read` = '".date("Y-m-d")."' where `id` = '{$_GET['m_id']}'";
         updContent();
+        alert("Донесение прочитано!");
     }
 }
 
@@ -527,6 +564,7 @@ function delMail(){
         $box['table']='messages';
         $box['params']="where `id` = '{$_GET['m_id']}'";
         delContent();
+        alert("Сообщение покинуло этот мир!");
     }
 }
 
@@ -537,6 +575,7 @@ function resetReadings(){
         $box['table']='posts';
         $box['params']="SET `readings` = '0' where id = '{$_GET['id']}'";
         updContent();
+        alert("Обнулили прочтение записи на сайте!");
     }
 }
 
@@ -553,6 +592,10 @@ function genToken(){
     }
 }
 
+function sendMail($email, $theme, $message){
+    mail($email, $theme, $message);
+}
+
 // Сброс пароля (функция):
 function resetPass(){
     global $box;
@@ -565,6 +608,8 @@ function resetPass(){
             $token=genToken();
             $box['params']="SET `token` = '{$token}' where `nickname` = '{$_POST['login']}'";
             updContent();
+            sendMail($user['email'], 'Ссылка на сброс пароля', "Доброе время суток, Ваша ссылка сброса пароля:\r\n http://programmer-tm.h1n.ru/admin/admin/?cmd=reset&t_id=$token");
+            alert("Депеша отправлена вам на почту, следуйте по ссылке из письма!");
             browse("/admin"); // Переадресация пользователя
         }
     } elseif ($_GET['t_id'] != ""){
@@ -577,6 +622,7 @@ function resetPass(){
             $_POST['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
             $box['params']="SET `password` = '{$_POST['password']}', `token` = NULL where id = '{$user['id']}'";
             updContent();
+            alert("Успех сопутствует Вам, мастер, можно войти на сайт!");
             browse("/admin"); // Переадресация пользователя
         }
     }
@@ -590,17 +636,26 @@ function delImage($file){
 // Модератор:
 function setUser(){
     global $box;
-    if ($_SESSION['role'] == "0"){
+    if ($_SESSION['role'] == "0" && $_GET['u_id'] != "1"){
         $user=getUser($_GET['u_id']);
         if ($user['role'] == "2"){
             $box['table']="users";
             $box['params']="SET `role` = '1' where id = '{$_GET['u_id']}'";
             updContent();
+            alert("Сказано модерировать!");
         } elseif ($user['role'] == "1"){
             $box['table']="users";
             $box['params']="SET `role` = '2' where id = '{$_GET['u_id']}'";
             updContent();
+            alert("Сказано не модерировать!");
+        } else {
+            $box['table']="users";
+            $box['params']="SET `role` = '2' where id = '{$_GET['u_id']}'";
+            updContent();
+            alert("Лежать!");
         }
+    } else {
+        alert("Куды полез! Не трож болезных...");
     }
 }
 

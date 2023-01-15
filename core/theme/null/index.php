@@ -1,11 +1,6 @@
 <?php
 echo "<a href=/>".$box['config']['site']['title']."</a><br>";
-if (getLogin() != "Гость"){
-    echo "<a href=/admin>".getLogin()."</a><a href=/mail>(".$box['mail'].")</a><br>";
-    echo "<a href=/logout>Выход</a><br><br>";
-} else {
-    echo "<a href=/admin>".getLogin()."</a><br><br>";
-}?>
+?>
 <?php if($_SESSION['role'] == "0"):?>
 	<?php echo date("Y-m-d");?>
 				

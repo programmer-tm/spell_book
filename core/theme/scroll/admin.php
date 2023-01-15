@@ -11,7 +11,7 @@
 		</h2>
 	</div>
 	<div class="post-entry">
-        <img loading="auto" src="/img/<?=$box['user']['avatar'];?>" width="350" height="250" alt="<?=$box['user']['nickname'];?>"><br>
+        <img loading="auto" src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" width="350" height="250" alt="<?=$box['user']['nickname'];?>"><br>
 		<input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
         Имя: <input class="form_in_reg" type="text" value="<?=$box['user']['name'];?>" name="user[name]" required><br>
         Фамилия: <input class="form_in_reg" type="text" value="<?=$box['user']['surename'];?>" name="user[surename]" required><br>
@@ -20,7 +20,7 @@
 	</div>
 	<div class="post-info">
     <button type="submit">Изменить</button> <button type="reset" class="cancelbtn">Отменить всё!</button>
-        <a href="/admin/?cmd=del">Самоликвидироваться!!!</a>
+        <input type="button" onclick="if(confirm('Убить тебя об стенку?!\nЭта операция не обратима!')){document.location.href = '/admin/?cmd=del';};" value="Удалить профиль"/>
     </form>
 	</div>
 	<div class="clear"></div>

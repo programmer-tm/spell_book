@@ -3,7 +3,6 @@ echo "<a href=/>".$box['config']['site']['title']."</a><br>";
 echo '<a onclick="javascript:history.back(); return false;" title="Назад в будущее!">Назад</a><br>';
 ?>
 <?php if($_SESSION['login']):?>
-    <a href=/logout>Выход</a> <a href=/mail>(<?=$box['mail'];?>)</a><br>
     <form action="/admin" method="post" enctype="multipart/form-data">
         <img loading="auto" src="/img/<?=$box['user']['avatar'];?>" width="350" height="250" alt="<?=$box['user']['nickname'];?>"><br>
         <input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
@@ -12,7 +11,7 @@ echo '<a onclick="javascript:history.back(); return false;" title="Назад в
         <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password]"><br>
         <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password2]"><br>
         <button type="submit">Изменить</button> <button type="reset" class="cancelbtn">Отменить всё!</button>
-        <a href="/admin/?cmd=del">Самоликвидироваться!!!</a>
+        <input type="button" onclick="if(confirm('Убить тебя об стенку?!\nЭта операция не обратима!')){document.location.href = '/admin/?cmd=del';};" value="Удалить профиль"/>
     </form>
     <?php if($_SESSION['role'] != 2):?>
         <p>Вашего внимания ожидают несколько комментариев... (<?=$box['countComments'];?>)</p>

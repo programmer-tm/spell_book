@@ -16,16 +16,17 @@
 		</h2>
 	</div>
 	<div class="post-entry">
-		<img loading="auto" src="/img/<?=$box['post']['image']?>" width="350" height="250" alt="<?=$box['post']['title']?>"><br>
+		<img loading="auto" src="/img/<?php echo ($box['post']['image']) ?: 'null.jpeg';?>" width="350" height="250" alt="<?=$box['post']['title']?>"><br>
 		<?php if($_SESSION['role'] == "0"):?>
-				<textarea name="post[text]" rows="19" cols="44"><?=$box['post']['text'];?></textarea><br>
-			<?php else:?>
-				<?php echo str_replace(array("\r\n", "\r", "\n"), '<br>', $box['post']['text'])."<br>"?>
-			<?php endif;?>
+			<a href="?id=<?=$box['post']['id'];?>&cmd=rest">Clear Readings</a><input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" />
+			<textarea name="post[text]" rows="19" cols="44"><?=$box['post']['text'];?></textarea><br>
+		<?php else:?>
+			<?php echo str_replace(array("\r\n", "\r", "\n"), '<br>', $box['post']['text'])."<br>"?>
+		<?php endif;?>
 	</div>
 	<div class="post-info">
 			<?php if($_SESSION['role'] == "0"):?>
-				<button type="submit">Сохранить</button><button type="reset" class="cancelbtn">Отменить</button><a href="?id=<?=$box['post']['id'];?>&cmd=delPost"> X </a><a href="?id=<?=$box['post']['id'];?>&cmd=rest">Clear Readings</a><input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" />
+				<button type="submit">Сохранить</button><button type="reset" class="cancelbtn">Отменить</button><input type="button" onclick="if(confirm('Затереть пост?!\nЭта операция не обратима!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delPost';};" value="Удалить пост"/><a href="?id=<?=$box['post']['id'];?>&cmd=rest">Clear Readings</a>
 			<?php else:?>
 				Это интересно?
 			<?php endif;?>
