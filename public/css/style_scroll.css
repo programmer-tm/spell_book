@@ -12,21 +12,21 @@ Programmer-tm.h1n.ru (programmer-tm.narod.ru)
 
 @font-face {
 	font-family: "Olietta script Lyrica BoldItalic"; 
-	src: url("../fonts/ofont.ru_Olietta script Lyrica.ttf") format("truetype");
+	src: url("/fonts/ofont.ru_Olietta script Lyrica.ttf") format("truetype");
 	font-style: normal;
 	font-weight: normal;
 }
 
 @font-face {
 	font-family: 'Magnolia Script';
-	src: url('../fonts/Magnoliascript.ttf') format('truetype');
+	src: url('/fonts/Magnoliascript.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
 
 @font-face {
 	font-family: 'Miama Nueva';
-	src: url('../fonts/miama.otf') format('truetype');
+	src: url('/fonts/miama.otf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -343,9 +343,9 @@ img {
 		
 		#content .post .post-title .post-date {
 			float: right;
-			font: bold 15px 'Magnolia Script';
+			font: bold 10px 'Magnolia Script';
 			color: #333333;
-			text-align: left;
+			text-align: center;
 			background: url("../images/post_date.png") no-repeat;
 			width: 60px;
 			height: 72px;
@@ -584,57 +584,13 @@ input,select,textarea,button,label,input[type="file"]{
 	color: #990000;
 }
 
-button,input[type="button"],input[type="file"]{
+button,input[type="file"]{
 	border-radius: 7px; 
 	border: none;
 }
 
-.zagl_otziv{
-	margin-left: 4vh;
-}
-
-.td_3{
-	width: 33%;
-}
-
-.td_2{
-	width: 50%;
-}
-
-.td_4{
-	width: 25%;
-}
-.td_6{
-	width: 16%;
-}
-
-.t_c_89{
-	width: 89%;
-}
-
-.t_c_92{
-	width: 92%;
-}
-
-.t_c_94{
-	width: 94%;
-}
-
-.t_c_95{
-	width: 95%;
-}
-
-.t_c_97{
-	width: 97%;
-}
-
-.t_c_98{
-	width: 98%;
-}
-
-.form_otziv{
-	width: 180px;
-	margin-bottom: 4px;
+button:hover {
+	box-shadow: inset 0 0 0 1px grey;
 }
 
 .form_sel_us{

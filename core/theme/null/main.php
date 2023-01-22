@@ -18,13 +18,7 @@
     <?php endif;?>
 </head>
 <body>
-    <a href="/admin"><img src="../img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" loading="auto" style="border-radius: 100px; /* Радиус скругления */ width: 80px; height: 80px; padding:10px 10px 10px 10px">
-    <?php if (getLogin() != "Гость"):?>
-	    <center><?=$_SESSION['login']?>(<a href="/mail/" title="Непрочитанных сообщений: <?=$box['mail'];?>"><?=$box['mail'];?></a>)<a title="Приветствуем тебя, пользователь: <?=getLogin();?>" href="/admin/"></a><br>
-        <input type="button" onclick="alert('Уважаемый, <?=$_SESSION['login'];?>, ждем Вас снова в гости!'); document.location.href = '/logout';" value="Выход"/></center>
-    <?php else:?>
-        <center><input type="button" onclick="document.location.href = '/admin';" value="Вход"/></center>
-	<?php endif;?>
+    <a href="/admin"><img src="../img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" loading="auto" style="border-radius: 100px; /* Радиус скругления */ width: 80px; height: 80px; padding:10px 10px 10px 10px"><?php if (getLogin() != "Гость"):?><br><?=$_SESSION['login']?>(<a href="/mail/" title="Непрочитанных сообщений: <?=$box['mail'];?>"><?=$box['mail'];?></a>)<a title="Приветствуем тебя, пользователь: <?=getLogin();?>" href="/admin/"></a><br><input type="button" onclick="alert('Уважаемый, <?=$_SESSION['login'];?>, ждем Вас снова в гости!'); document.location.href = '/logout';" value="Выход"/><br><br><?php else:?></a><br><input type="button" onclick="document.location.href = '/admin';" value="Вход"/><br><br><?php endif;?>
     <?=$box['data'];?>
 </body>
 </html>

@@ -16,10 +16,10 @@ echo "Почта<br>";
         <p>Отправлено: <?=$in['date_write'];?></p>
         <p>
         <?php if(is_null($in['date_read'])):?>
-            <a href=/mail/?cmd=read&m_id=<?=$in['id'];?>>Прочитать!</a>
+            <input type="button" onclick="if(confirm('Прочитать?!')){document.location.href = '/mail/?cmd=read&m_id=<?=$in['id'];?>';};" value="Прочитать"/>
         <?php endif;?>
         </p>
-        <a href=/mail/?cmd=del&m_id=<?=$in['id'];?>>Удалить!</a>
+        <input type="button" onclick="if(confirm('Удалить?!')){document.location.href = '/mail/?cmd=del&m_id=<?=$in['id'];?>';};" value="Удалить"/>
     <?php endforeach;?>
 <?php endif;?>
 
@@ -42,7 +42,7 @@ echo "Почта<br>";
             Не прочитано
         <?php endif;?>
         </p>
-        <a href=/mail/?cmd=del&m_id=<?=$out['id'];?>>Удалить!</a>
+        <input type="button" onclick="if(confirm('Удалить?!')){document.location.href = '/mail/?cmd=del&m_id=<?=$out['id'];?>';};" value="Удалить"/>
     <?php endforeach;?>
 <?php endif;?>
 <?php if($_SESSION['id'] !=""):?>

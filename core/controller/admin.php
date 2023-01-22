@@ -11,7 +11,7 @@ $_GET['u_id']=chislo(clear($_GET['u_id'])); // Смотрим пользоват
 if ($_POST['login'] && $_POST['password']){
     authUser(); // Выполним авторизацию
     clearData(); // Почистим данные
-    browse($_SERVER['HTTP_REFERER']); // Переадрес на предыдущую страницу
+    browse(); // Переадрес на главную страницу
 } elseif ($_POST['user'] != "" && $_SESSION['login'] == ""){
     addUser(); // Регистрируем пользователя
     clearData(); // Почистим данные
@@ -33,7 +33,8 @@ if ($_POST['login'] && $_POST['password']){
     setUser(); // Обновление статуса пользователя
     clearData(); // Почистим данные
     browse("/admin"); // Переадресация пользователя
-} elseif ($_POST['CountPost'] && $_POST['CountMessage'] && $_POST['theme']){
+} elseif ($_POST['CountPost'] && $_POST['CountMessage'] && $_POST['theme'] && $_POST['title']){
+    $_POST['title']=clear($_POST['title']); // Смотрим тему
     $_POST['theme']=clear($_POST['theme']); // Смотрим тему
     $_POST['CountPost']=chislo(clear($_POST['CountPost'])); // Смотрим число сообщений
     $_POST['CountMessage']=chislo(clear($_POST['CountMessage'])); // Смотрим число писем
@@ -41,6 +42,7 @@ if ($_POST['login'] && $_POST['password']){
     $box['config']['site']['CountPost']=$_POST['CountPost']; // Смотрим число сообщений
     $box['config']['site']['CountMessage']=$_POST['CountMessage'];// Смотрим число писем
     $box['config']['site']['theme']=$_POST['theme']; // Смотрим тему
+    $box['config']['site']['title']=$_POST['title']; // Смотрим название проекта
     updConf(); // Пишем конфиг
     clearData(); // Почистим данные
     browse("/admin"); // Переадресация пользователя

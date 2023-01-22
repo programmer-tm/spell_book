@@ -23,18 +23,11 @@ echo '<a onclick="javascript:history.back(); return false;" title="Назад в
         <h2>Управление пользователями</h2>
         <?php foreach($box['userlist'] as $user):?>
             <p>Пользователь: <?=$user['nickname'];?> (<?=$user['name'];?>, <?=$user['surename'];?>)<br>Зарегистрирован: <?=$user['date_register'];?>,<br>Последний раз был: <?=$user['date_login'];?></p>
-            <br><a href="/admin/?cmd=upd&u_id=<?=$user['id'];?>">
-            <?php if($user['role'] == "2"):?>
-                В модераторы!
-            <?php elseif($user['role'] == "1"):?>
-                Разжаловать из модераторов!
-            <?php else:?>
-                Осторожно, модерн!
-            <?php endif;?>
-            </a>
+            <input type="button" onclick="if(confirm('Изменить роль на сайте, а ты уверен?!')){document.location.href = '/admin/?cmd=upd&u_id=<?=$user['id'];?>';};" value="<?php if($user['role'] == "2"):?>В модераторы!<?php elseif($user['role'] == "1"):?>Разжаловать из модераторов!<?php else:?>Осторожно, модерн!<?php endif;?>"/>
         <?php endforeach;?>
         <h1>Управление настройками сайта</h1>
         <form action="/admin" method="post" enctype="multipart/form-data">
+            Название проекта:<input type="text" value="<?=$box['config']['site']['title'];?>" name="title" required><br>
             Количество постов на страницу: <input type="number" value="<?=$box['config']['site']['CountPost'];?>" name="CountPost" required><br>
             Число личных сообщений: <input type="number" value="<?=$box['config']['site']['CountMessage'];?>" name="CountMessage" required><br>
             Тема сайта: <select name="theme">
@@ -53,7 +46,7 @@ echo '<a onclick="javascript:history.back(); return false;" title="Назад в
     <?php endif;?> 
 <?php elseif($_GET['cmd'] == "reset" && $_GET['t_id'] != ""):?>
     <h2>Новый пароль</h2>
-    <form action="/admin/?cmd=reset&t_id='.$_GET['t_id'].'" method="post" enctype="multipart/form-data">
+    <form action="/admin/?cmd=reset&t_id=<?=$_GET['t_id'];?>" method="post" enctype="multipart/form-data">
         <input class="form_in_reg" type="password" placeholder="Введите пароль" name="password"><br>
         <input class="form_in_reg" type="password" placeholder="Введите пароль" name="password2"><br>
         <button type="submit">Изменить</button>

@@ -30,6 +30,14 @@
 	<?php else:?>
 		<?php unset($_SESSION['in']); unset($_SESSION['alert']);?>
 	<?php endif;?>
+	<style>
+            details summary {
+            list-style-type: "";
+            }
+            details[open] summary {
+            list-style-type: "";
+            }
+    </style>
 </head>
 <body>
 	<!--Проверка сообщения для вывода или не в
@@ -46,12 +54,11 @@
 	<!--Навигационная система проекта-->
 	<div id="header-menu">
 		<ul>
-			<li><a href="/">Главная</a></li>
+			<li><a href="/" title="На главную страницу сайта">Главная</a></li>
 			<?php if($_SESSION['id']):?>
-			<li><a href="/admin/">Личный кабинет</a></li>
-			<li><a href="/mail/">Личные сообщения</a></li>
+			<li><a href="/admin/" title="В личный раздел">Личный кабинет</a></li>
+			<li><a href="/mail/" title="Читать личные сообщения">Личные сообщения</a></li>
 			<?php endif;?>
-			<li><a href="/downloads/books.pdf.zip">Архив книг</a></li>
 		</ul>
 	</div>
 	<!-- Подписки на новости не используются (Картинка вырезана из проекта)
@@ -69,9 +76,9 @@
 		<h4>
 			<?php if (getLogin() != "Гость"):?>
 				<?=$_SESSION['login']?>(<a href="/mail/" title="Непрочитанных сообщений: <?=$box['mail'];?>"><?=$box['mail'];?></a>)<a title="Приветствуем тебя, пользователь: <?=getLogin();?>" href="/admin/"><img src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" alt="<?=$_SESSION['login'];?>" align="left" hspace="2" class="menu-img"><br>(Личный кабинет)</a><br>
-                <input type="button" onclick="alert('Уважаемый, <?=$_SESSION['login'];?>, ждем Вас снова в гости!'); document.location.href = '/logout';" value="Выход"/>
+                <button onclick="alert('Уважаемый, <?=$_SESSION['login'];?>, ждем Вас снова в гости!'); document.location.href = '/logout';">Выход</button>
             <?php else:?>
-				<input type="button" onclick="document.location.href = '/admin';" value="Вход на сайт (<?=getLogin();?>)"/>
+				<button onclick="document.location.href = '/admin';">Вход на сайт (<?=getLogin();?>)</button>
 			<?php endif;?>
 		</H4>
 	</div>

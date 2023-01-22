@@ -5,6 +5,7 @@
 	<div class="post-title">
 		<div class="post-date">
 			<br>
+			<br>
 			<?=$box['post']['date_write'];?>
 		</div>			
 		<h2>
@@ -18,7 +19,7 @@
 	<div class="post-entry">
 		<img loading="auto" src="/img/<?php echo ($box['post']['image']) ?: 'null.jpeg';?>" width="350" height="250" alt="<?=$box['post']['title']?>"><br>
 		<?php if($_SESSION['role'] == "0"):?>
-			<a href="?id=<?=$box['post']['id'];?>&cmd=rest">Clear Readings</a><input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" />
+			<input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
 			<textarea name="post[text]" rows="19" cols="44"><?=$box['post']['text'];?></textarea><br>
 		<?php else:?>
 			<?php echo str_replace(array("\r\n", "\r", "\n"), '<br>', $box['post']['text'])."<br>"?>
@@ -26,7 +27,7 @@
 	</div>
 	<div class="post-info">
 			<?php if($_SESSION['role'] == "0"):?>
-				<button type="submit">Сохранить</button><button type="reset" class="cancelbtn">Отменить</button><input type="button" onclick="if(confirm('Затереть пост?!\nЭта операция не обратима!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delPost';};" value="Удалить пост"/><a href="?id=<?=$box['post']['id'];?>&cmd=rest">Clear Readings</a>
+				<button type="submit">Сохранить</button><button type="reset" class="cancelbtn">Отменить</button><input type="button" onclick="if(confirm('Затереть пост?!\nЭта операция не обратима!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delPost';};" value="Удалить пост"/><input type="button" onclick="if(confirm('Обнулить просмотры записи?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=rest';};" value="Удалить прочтения"/>
 			<?php else:?>
 				Это интересно?
 			<?php endif;?>
@@ -37,12 +38,12 @@
 	</form>
 <?php endif;?>
 
-
 <?php foreach($box['comments'] as $comment):?>
     <?php if(($_SESSION['role'] != "2" && $_SESSION['role'] != "") || $comment['name'] == $_SESSION['login']):?>
         <div class="post">
 		<div class="post-title">
 			<div class="post-date">
+				<br>
 				<br>
 				<?=$comment['date_write'];?>
 			</div>			
@@ -63,15 +64,7 @@
             <button type="submit">Сохранить</button>
             <button type="reset" class="cancelbtn">Отменить</button>
             <?php if($_SESSION['role'] != "2"):?>
-                <a href="?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>">
-                <?php if($comment['status'] == "0"):?>
-                    Закрыть!
-                <?php elseif($comment['status'] == "1"):?>
-                    Публиковать!
-                <?php else:?>
-                    На проверку!
-                <?php endif;?>
-                </a>
+                <input type="button" onclick="if(confirm('Изменить статус комментария?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>';};" value="<?php if($comment['status'] == "0"):?>Закрыть!<?php elseif($comment['status'] == "1"):?>Публиковать!<?php else:?>На проверку!<?php endif;?>"/>
             <?php else:?> 
                 <p>
                 <?php if($comment['status'] == "0"):?>
@@ -81,7 +74,7 @@
                 <?php endif;?>
                 </p>
             <?php endif;?>
-            <a href="?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>">X</a>
+            <input type="button" onclick="if(confirm('Удалить комментарий?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>';};" value="Удалить комментарий"/>
             </form>
 		</div>
 		<div class="clear"></div>
@@ -90,6 +83,7 @@
         <div class="post">
 		<div class="post-title">
 			<div class="post-date">
+				<br>
 				<br>
 				<?=$comment['date_write'];?>
 			</div>			
@@ -105,8 +99,6 @@
         </div>
     <?php endif;?>
 <?php endforeach;?>
-
-
 
 <div class="post">
 <div class="comments">

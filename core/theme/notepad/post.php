@@ -17,7 +17,7 @@
         <?php echo str_replace(array("\r\n", "\r", "\n"), '<br>', $box['post']['text'])."<br>"?>
     <?php endif;?>
     <?php if($_SESSION['role'] == "0"):?>
-        <button type="submit">Сохранить</button><button type="reset" class="cancelbtn">Отменить</button><br><input type="button" onclick="if(confirm('Затереть пост?!\nЭта операция не обратима!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delPost';};" value="Удалить пост"/><br><a href="?id=<?=$box['post']['id'];?>&cmd=rest">Удалить прочтения</a>
+        <button type="submit">Сохранить</button><button type="reset" class="cancelbtn">Отменить</button><button onclick="if(confirm('Затереть пост?!\nЭта операция не обратима!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delPost';};">Удалить пост</button><button onclick="if(confirm('Обнулить просмотры записи?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=rest';};">Удалить прочтения</button><br>
     <?php endif;?>
     <?=$box['post']['date_write'];?>
     <?php if($_SESSION['role'] == "0"):?>
@@ -34,17 +34,9 @@
                 <input type="text" value="<?=$comment['name'];?>" name="comment[name]" required><br>
                 <textarea name="comment[text]" rows="19" cols="44"><?=$comment['text'];?></textarea><br>
                 <button type="submit">Сохранить</button>
-                <button type="reset" class="cancelbtn">Отменить</button><br>
+                <button type="reset" class="cancelbtn">Отменить</button>
                 <?php if($_SESSION['role'] != "2"):?>
-                    <a href="?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>">
-                    <?php if($comment['status'] == "0"):?>
-                        Закрыть!
-                    <?php elseif($comment['status'] == "1"):?>
-                        Публиковать!
-                    <?php else:?>
-                        На проверку!
-                    <?php endif;?>
-                    </a><br>
+                    <button onclick="if(confirm('Изменить статус комментария?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>';};"><?php if($comment['status'] == "0"):?>Закрыть!<?php elseif($comment['status'] == "1"):?>Публиковать!<?php else:?>На проверку!<?php endif;?></button>
                 <?php else:?> 
                     <p>
                     <?php if($comment['status'] == "0"):?>
@@ -54,7 +46,7 @@
                     <?php endif;?>
                     </p>
                 <?php endif;?>
-                <a href="?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>">Удалить комментарий!</a>
+                <button onclick="if(confirm('Удалить комментарий?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>';};">Удалить комментарий</button>
                     <?php foreach($box['userlist'] as $user):?>
                         <?php if($user['id'] == $comment['moder_id']):?>
                             <p>Последние действия: (<?=$user['nickname']?>, <?=$comment['date_modification'];?>)</p>
@@ -74,10 +66,10 @@
     <h2>Форма отправки комментариев:</h2>
     <form action="/post/?id=<?=$box['post']['id'];?>&cmd=addComment" method="post" enctype="multipart/form-data">
         <?php if (!$_SESSION['login']):?>
-            <input class="form_in_otz_p" type="text" placeholder="Введите имя" name="comment[name]" required><br>
-            <input class="form_in_otz_p" type="email" size = 25 placeholder="Введите email" name="comment[email]" required><br>
+            <input type="text" placeholder="Введите имя" name="comment[name]" required>(Ваше имя)<br>
+            <input type="email" size = 25 placeholder="Введите email" name="comment[email]" required>(Email)<br>
         <?php endif;?>
-        <textarea class="form_in_otz_p_b" placeholder="Введите текст комментария" name="comment[text]" required></textarea><br>
+        <textarea placeholder="Введите текст комментария" name="comment[text]" required></textarea>(Комментарий)<br>
         <button type="submit">Отправить</button>
         <button type="reset" class="cancelbtn">Очистить</button>
     </form>

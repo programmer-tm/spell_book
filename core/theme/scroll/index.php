@@ -3,6 +3,7 @@
 		<div class="post-title">
 			<div class="post-date">
 				<br>
+				<br>
 				<?php echo date("Y-m-d");?>
 			</div>			
 			<h2>Новая запись:</h2>
@@ -12,21 +13,21 @@
     			<input type="text" placeholder="Заголовок записи" name="post[title]" required><br>
     			<textarea name="post[text]" rows="19" cols="44" placeholder="Текст записи"></textarea><br>
     			<input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
-   				<input type="date" placeholder="" name="post[date_write]" required><br>
-    			<button type="submit">Добавить</button>
-    			<button type="reset" class="cancelbtn">Очистить</button><br>
-    		</form>
+   				<input type="date" value="<?php echo date("Y-m-d");?>" name="post[date_write]" required><br>
 		</div>
 		<div class="post-info">
-
+			<button type="submit">Добавить</button><button type="reset" class="cancelbtn">Очистить</button><br>
+		</form>
 		</div>
 		<div class="clear"></div>
 	</div>
 <?php endif;?>
+<?php if(empty($box['posts'])){$box['posts']=[['id'=>'0','title'=>'Чистая установка','text'=>'Тестовый пост для вывода на сайт']];} ?>
 <?php foreach($box['posts'] as $post):?>
 	<div class="post">
 		<div class="post-title">
 			<div class="post-date">
+				<br>
 				<br>
 				<?=$post['date_write'];?>
 			</div>			

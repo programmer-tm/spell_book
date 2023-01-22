@@ -16,7 +16,7 @@ echo $box['post']['title']."<br>";
 </h2>
 <img loading="auto" src="/img/<?php echo ($box['post']['image']) ?: 'null.jpeg';?>" width="350" height="250" alt="<?=$box['post']['title']?>"><br>
 <?php if($_SESSION['role'] == "0"):?>
-    <a href="?id=<?=$box['post']['id'];?>&cmd=rest">Clear Readings</a><input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" />
+    <input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
 	<textarea name="post[text]" rows="19" cols="44"><?=$box['post']['text'];?></textarea><br>
 <?php else:?>
 	<?php echo str_replace(array("\r\n", "\r", "\n"), '<br>', $box['post']['text'])."<br>"?>
@@ -24,6 +24,7 @@ echo $box['post']['title']."<br>";
 <?php if($_SESSION['role'] == "0"):?>
 	<button type="submit">Сохранить</button><button type="reset" class="cancelbtn">Отменить</button>
     <input type="button" onclick="if(confirm('Затереть пост?!\nЭта операция не обратима!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delPost';};" value="Удалить пост"/>
+    <input type="button" onclick="if(confirm('Обнулить просмотры записи?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=rest';};" value="Удалить прочтения"/>
 <?php else:?>
 	Это интересно?
 <?php endif;?>
@@ -40,15 +41,7 @@ echo $box['post']['title']."<br>";
         <button type="submit">Сохранить</button>
         <button type="reset" class="cancelbtn">Отменить</button>
         <?php if($_SESSION['role'] != "2"):?>
-            <a href="?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>">
-            <?php if($comment['status'] == "0"):?>
-                Закрыть!
-            <?php elseif($comment['status'] == "1"):?>
-                Публиковать!
-            <?php else:?>
-                На проверку!
-            <?php endif;?>
-            </a>
+            <input type="button" onclick="if(confirm('Изменить статус комментария?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>';};" value="<?php if($comment['status'] == "0"):?>Закрыть!<?php elseif($comment['status'] == "1"):?>Публиковать!<?php else:?>На проверку!<?php endif;?>"/><br>
         <?php else:?> 
             <p>
             <?php if($comment['status'] == "0"):?>
@@ -58,7 +51,7 @@ echo $box['post']['title']."<br>";
             <?php endif;?>
             </p>
         <?php endif;?>
-        <a href="?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>">X</a>
+        <input type="button" onclick="if(confirm('Удалить комментарий?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>';};" value="Удалить комментарий"/>
             <?php foreach($box['userlist'] as $user):?>
                 <?php if($user['id'] == $comment['moder_id']):?>
                     <p>Последние действия: (<?=$user['nickname']?>, <?=$comment['date_modification'];?>)</p>

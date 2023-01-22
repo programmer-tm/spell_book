@@ -38,10 +38,10 @@
                 <p>Отправлено: <?=$in['date_write'];?></p>
                 <p>
                 <?php if(is_null($in['date_read'])):?>
-                    <a href=/mail/?cmd=read&m_id=<?=$in['id'];?>>Прочитать!</a>
+                    <button onclick="if(confirm('Прочитать?!')){document.location.href = '/mail/?cmd=read&m_id=<?=$in['id'];?>';};">Прочитать</button>
                 <?php endif;?>
                 </p>
-                <a href=/mail/?cmd=del&m_id=<?=$in['id'];?>>Удалить!</a>
+                <button onclick="if(confirm('Удалить?!')){document.location.href = '/mail/?cmd=del&m_id=<?=$in['id'];?>';};">Удалить</button>
             <?php endforeach;?>
         </div>
         <div class="post-info">
@@ -96,7 +96,7 @@
                     Не прочитано
                 <?php endif;?>
                 </p>
-                <a href=/mail/?cmd=del&m_id=<?=$out['id'];?>>Удалить!</a>
+                <button onclick="if(confirm('Удалить?!')){document.location.href = '/mail/?cmd=del&m_id=<?=$out['id'];?>';};">Удалить</button>
             <?php endforeach;?>
         </div>
         <div class="post-info">
@@ -111,9 +111,9 @@
 	<div class="post-title">
 		<div class="post-date">
         <br>
-        <p class="post-date-title">Новое</p>
+        <p class="post-date-title">***</p>
 		</div>			
-		<h2>Выбор пользователя</h2>
+		<h2>Написать сообщение</h2>
 	</div>
 	<div class="post-entry">
     <form method="post" enctype="multipart/form-data">
@@ -121,14 +121,12 @@
             <?php foreach($box['userlist'] as $to):?>
                 <option value="<?=$to['id'];?>"><?=$to['nickname'];?>(<?=$to['surename'];?> <?=$to['name'];?>)</option>
             <?php endforeach;?>
-        </select>
-        <p>Введите сообщение:</p>
-        <textarea name="message"></textarea>
-        <button type="submit">Отправить</button>
-    </form>
+        </select>(Выбор пользователя)<br>
+        <textarea name="message" placeholder="(Текст сообщения)"></textarea>(Текст сообщения)
 	</div>
 	<div class="post-info">
-    Вас понял!
+        <button type="submit">Отправить</button>
+    </form>
 	</div>
 	<div class="clear"></div>
     </div>   

@@ -17,10 +17,10 @@
             <p>Отправлено: <?=$in['date_write'];?></p>
             <p>
             <?php if(is_null($in['date_read'])):?>
-                <a href=/mail/?cmd=read&m_id=<?=$in['id'];?>>Прочитать!</a>
+                <button onclick="if(confirm('Прочитать?!')){document.location.href = '/mail/?cmd=read&m_id=<?=$in['id'];?>';};">Прочитать</button>
             <?php endif;?>
             </p>
-            <a href=/mail/?cmd=del&m_id=<?=$in['id'];?>>Удалить!</a>
+            <button onclick="if(confirm('Удалить?!')){document.location.href = '/mail/?cmd=del&m_id=<?=$in['id'];?>';};">Удалить</button>
         <?php endforeach;?>
         <hr class="hr" align="right">
     </div>   
@@ -50,22 +50,21 @@
                 Не прочитано
             <?php endif;?>
             </p>
-            <a href=/mail/?cmd=del&m_id=<?=$out['id'];?>>Удалить!</a>
+            <button onclick="if(confirm('Удалить?!')){document.location.href = '/mail/?cmd=del&m_id=<?=$out['id'];?>';};">Удалить</button>         
         <?php endforeach;?>
         <hr class="hr" align="right">
     </div>
 <?php endif;?>
 <?php if($_SESSION['id'] !=""):?>
     <div id="right_content">
-        <h2>Выбор пользователя</h2>
+        <h2>Новое сообщение</h2>
         <form method="post" enctype="multipart/form-data">
             <select name="to_id">
                 <?php foreach($box['userlist'] as $to):?>
                     <option value="<?=$to['id'];?>"><?=$to['nickname'];?>(<?=$to['surename'];?> <?=$to['name'];?>)</option>
                 <?php endforeach;?>
-            </select>
-            <p>Введите сообщение:</p>
-            <textarea name="message"></textarea>
+            </select>(Адресат)<br>
+            <textarea name="message" placeholder="(Текст сообщения)"></textarea>(Сообщение)<br>
             <button type="submit">Отправить</button>
         </form>
         <hr class="hr" align="right">
