@@ -7,7 +7,7 @@
             <input class="form_in_reg" type="text" value="<?=$box['user']['name'];?>" name="user[name]" required>(Имя)<br>
             <input class="form_in_reg" type="text" value="<?=$box['user']['surename'];?>" name="user[surename]" required>(Фамилия)<br>
             <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password]">(Пароль)<br>
-            <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password2]">(Постор пароля)<br>
+            <input class="form_in_reg" type="password" placeholder="Повторите пароль" name="user[password2]">(Повтор пароля)<br>
             <button type="submit">Изменить</button> <button type="reset" class="cancelbtn">Отменить всё!</button><button onclick="if(confirm('Убить тебя об стенку?!\nЭта операция не обратима!')){document.location.href = '/admin/?cmd=del';};">Удалить профиль</button>
         </form>
 		<hr class="hr" align="right">
@@ -57,7 +57,7 @@
     <h2>Новый пароль</h2>
     <form action="/admin/?cmd=reset&t_id=<?=$_GET['t_id'];?>" method="post" enctype="multipart/form-data">
         <input class="form_in_reg" type="password" placeholder="Введите пароль" name="password"><br>
-        <input class="form_in_reg" type="password" placeholder="Введите пароль" name="password2"><br>
+        <input class="form_in_reg" type="password" placeholder="Повторите пароль" name="password2"><br>
         <button type="submit">Изменить</button>
         <button type="reset" class="cancelbtn">Очистить</button><br>
     </form>
@@ -96,7 +96,7 @@
                 <input class="form_in_reg" type="text" placeholder="Введите фамилию" name="user[surename]" required><br>
                 <input class="form_in_reg" type="email" placeholder="Введите email" name="user[email]" required><br>
                 <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password]" required><br>
-                <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password2]" required><br>
+                <input class="form_in_reg" type="password" placeholder="Повторите пароль" name="user[password2]" required><br>
                 <button type="submit">Регистрировать меня!</button> <button type="reset" class="cancelbtn">Отменить всё!</button>
             </form>
             <hr class="hr" align="right">
