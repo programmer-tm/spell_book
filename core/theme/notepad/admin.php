@@ -2,7 +2,7 @@
     <div id="right_content">
         <h2>О Вас</h2>
         <form action="/admin" method="post" enctype="multipart/form-data">
-            <img loading="auto" src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" width="350" height="250" alt="<?=$box['user']['nickname'];?>"><br>
+            <img loading="auto" src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" hspace="4" align="right" style="border-radius: 100px; /* Радиус скругления */ width: 150px; height: 150px; padding:10px 10px 10px 10px" alt="<?=$box['user']['nickname'];?>"><br>
             <input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
             <input class="form_in_reg" type="text" value="<?=$box['user']['name'];?>" name="user[name]" required>(Имя)<br>
             <input class="form_in_reg" type="text" value="<?=$box['user']['surename'];?>" name="user[surename]" required>(Фамилия)<br>

@@ -60,13 +60,14 @@
                         <?php endforeach;?>
                     </form>
                     <p>Оставлен: <?=$comment['date_write'];?></p>
-                    <?php $i++?>
+                    <hr class="hr" align="right">
                 <?php elseif($comment['status'] == "0"):?>
                     <h2>Комментирует: <?=$comment['name'];?></h2>
                     <p>Пишет: <?=$comment['text'];?></p> 
                     <p>Оставлен: <?=$comment['date_write'];?></p>
+                    <hr class="hr" align="right">
                 <?php endif;?>
-            <hr class="hr" align="right">
+            
         </div>
     <?php endforeach;?>
 <?php endif;?>

@@ -131,3 +131,7 @@ html,body{
 input,textarea,select{
     width: 330px;
 }
+
+textarea{
+    height: 150px;
+}

@@ -37,69 +37,87 @@
 <?php if($_SESSION['role'] == "0"):?>
 	</form>
 <?php endif;?>
-
-<?php foreach($box['comments'] as $comment):?>
-    <?php if(($_SESSION['role'] != "2" && $_SESSION['role'] != "") || $comment['name'] == $_SESSION['login']):?>
-        <div class="post">
+<?php if(empty(getComments("where `post_id` = '{$box['post']['id']}' AND `status` = '0'")) && $_SESSION['id'] == ""):?>
+    <div class="post">
 		<div class="post-title">
 			<div class="post-date">
 				<br>
 				<br>
-				<?=$comment['date_write'];?>
+				<?php echo date("Y-m-d");?>
 			</div>			
-			<h2>Управление комментарием!</h2>
+			<h2>Информация</h2>
 		</div>
 		<div class="post-entry">
-            <form action="?id=<?=$box['post']['id'];?>&cmd=updComment" method="post" enctype="multipart/form-data">
-            <input type="text" value="<?=$comment['id'];?>" name="comment[id]" required hidden><br>
-            <input type="text" value="<?=$comment['name'];?>" name="comment[name]" required><br>
-            <textarea name="comment[text]" rows="19" cols="44"><?=$comment['text'];?></textarea><br>
-            <?php foreach($box['userlist'] as $user):?>
-                <?php if($user['id'] == $comment['moder_id']):?>
-                    <p>Последние действия: (<?=$user['nickname']?>, <?=$comment['date_modification'];?>)</p>
-                <?php endif;?>
-            <?php endforeach;?>
+			Нет доступных комментариев...
 		</div>
 		<div class="post-info">
-            <button type="submit">Сохранить</button>
-            <button type="reset" class="cancelbtn">Отменить</button>
-            <?php if($_SESSION['role'] != "2"):?>
-                <input type="button" onclick="if(confirm('Изменить статус комментария?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>';};" value="<?php if($comment['status'] == "0"):?>Закрыть!<?php elseif($comment['status'] == "1"):?>Публиковать!<?php else:?>На проверку!<?php endif;?>"/>
-            <?php else:?> 
-                <p>
-                <?php if($comment['status'] == "0"):?>
-                    Опубликовано
-                <?php else:?>
-                    На модерации
-                <?php endif;?>
-                </p>
-            <?php endif;?>
-            <input type="button" onclick="if(confirm('Удалить комментарий?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>';};" value="Удалить комментарий"/>
-            </form>
+			Понятно...
 		</div>
 		<div class="clear"></div>
-        </div>
-    <?php elseif($comment['status'] == "0"):?>
-        <div class="post">
-		<div class="post-title">
-			<div class="post-date">
-				<br>
-				<br>
-				<?=$comment['date_write'];?>
-			</div>			
-			<h2><?=$comment['name'];?></h2>
-		</div>
-		<div class="post-entry">
-            <p>Пишет: <?=$comment['text'];?></p> 
-		</div>
-		<div class="post-info">
-            Принято!
-		</div>
-		<div class="clear"></div>
-        </div>
-    <?php endif;?>
-<?php endforeach;?>
-
+	</div>
+<?php else:?>
+	<?php foreach($box['comments'] as $comment):?>
+		<?php if(($_SESSION['role'] != "2" && $_SESSION['role'] != "") || $comment['name'] == $_SESSION['login']):?>
+			<div class="post">
+			<div class="post-title">
+				<div class="post-date">
+					<br>
+					<br>
+					<?=$comment['date_write'];?>
+				</div>			
+				<h2>Управление комментарием!</h2>
+			</div>
+			<div class="post-entry">
+				<form action="?id=<?=$box['post']['id'];?>&cmd=updComment" method="post" enctype="multipart/form-data">
+				<input type="text" value="<?=$comment['id'];?>" name="comment[id]" required hidden><br>
+				<input type="text" value="<?=$comment['name'];?>" name="comment[name]" required><br>
+				<textarea name="comment[text]" rows="19" cols="44"><?=$comment['text'];?></textarea><br>
+				<?php foreach($box['userlist'] as $user):?>
+					<?php if($user['id'] == $comment['moder_id']):?>
+						<p>Последние действия: (<?=$user['nickname']?>, <?=$comment['date_modification'];?>)</p>
+					<?php endif;?>
+				<?php endforeach;?>
+			</div>
+			<div class="post-info">
+				<button type="submit">Сохранить</button>
+				<button type="reset" class="cancelbtn">Отменить</button>
+				<?php if($_SESSION['role'] != "2"):?>
+					<input type="button" onclick="if(confirm('Изменить статус комментария?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=modComment&c_id=<?=$comment['id'];?>';};" value="<?php if($comment['status'] == "0"):?>Закрыть!<?php elseif($comment['status'] == "1"):?>Публиковать!<?php else:?>На проверку!<?php endif;?>"/>
+				<?php else:?> 
+					<p>
+					<?php if($comment['status'] == "0"):?>
+						Опубликовано
+					<?php else:?>
+						На модерации
+					<?php endif;?>
+					</p>
+				<?php endif;?>
+				<input type="button" onclick="if(confirm('Удалить комментарий?!')){document.location.href = '?id=<?=$box['post']['id'];?>&cmd=delComment&c_id=<?=$comment['id'];?>';};" value="Удалить комментарий"/>
+				</form>
+			</div>
+			<div class="clear"></div>
+			</div>
+		<?php elseif($comment['status'] == "0"):?>
+			<div class="post">
+			<div class="post-title">
+				<div class="post-date">
+					<br>
+					<br>
+					<?=$comment['date_write'];?>
+				</div>			
+				<h2><?=$comment['name'];?></h2>
+			</div>
+			<div class="post-entry">
+				<p>Пишет: <?=$comment['text'];?></p> 
+			</div>
+			<div class="post-info">
+				Принято!
+			</div>
+			<div class="clear"></div>
+			</div>
+		<?php endif;?>
+	<?php endforeach;?>
+<?php endif;?>
 <div class="post">
 <div class="comments">
 	<h2>Форма отправки комментариев:</h2><br>

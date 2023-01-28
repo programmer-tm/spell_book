@@ -2,18 +2,16 @@
     <div class="post">
 	<div class="post-title">
 		<div class="post-date">
-			<br>
             <br>
-			<?=$box['user']['date_register'];?>
+            <img loading="auto" src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" style="border-radius: 100px; /* Радиус скругления */ width: 33px; height: 33px; padding:10px 10px 10px 10px" alt="<?=$box['user']['nickname'];?>"><br>
 		</div>
         <form action="/admin" method="post" enctype="multipart/form-data">		
 		<h2>
             О Вас
 		</h2>
 	</div>
-	<div class="post-entry">
-        <img loading="auto" src="/img/<?php echo ($_SESSION['avatar']) ?: 'admin.gif';?>" width="350" height="250" alt="<?=$box['user']['nickname'];?>"><br>
-		<input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" /><br>
+	<div class="post-entry">  
+		<input accept=".jpg, .jpeg, .png, .gif, .bmp" name="image" type="file" />(Аватар)<br>
         <input class="form_in_reg" type="text" value="<?=$box['user']['name'];?>" name="user[name]" required>(Имя)<br>
         <input class="form_in_reg" type="text" value="<?=$box['user']['surename'];?>" name="user[surename]" required>(Фамилия)<br>
         <input class="form_in_reg" type="password" placeholder="Введите пароль" name="user[password]">(Новый пароль)<br>
